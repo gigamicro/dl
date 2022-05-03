@@ -1,9 +1,11 @@
 dlc
-dlc/*
 dl
-dl/*
 logs
-logs/*
+drm/AIWar
+drm/Splatune
+drm/Subnautica
+drm/dlarchive
+drm/tree
 *.opus
 *.ogg
 *.wav
