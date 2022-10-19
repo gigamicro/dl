@@ -18,6 +18,3 @@
 `dl.single.audio.sh (id)`: Downloads opus audio track from video
 
 `dl.single.image.sh (id)`: Downloads png image at ten seconds into video
-
-
-`play.sh`: plays all opus files in current dir and subdirs
