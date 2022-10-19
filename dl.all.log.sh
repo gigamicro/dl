@@ -10,4 +10,4 @@ rm -rf logs dl*.err
 echo -n $$ > logs/pid
 ( echo dl; bash dl.main.sh; echo dlc; bash dl.c.main.sh; echo "~FIN~" ) 2>&1 | tee "logs/all/$(date +"%Y%m%d%H%M%S%N").log"
 rm logs/pid
-(syncthing -no-browser > ~/syncthing.log &) & > /dev/null
+(syncthing -no-browser > /tmp/syncthing.log &) & > /dev/null
