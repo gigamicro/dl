@@ -13,10 +13,11 @@ while read i; do
   echo "$locator -> $dir."
   mkdir "$dir" 2> /dev/null || echo "Directory exists"
   cp -T "../drm/trims/${i/$locator /}.sh" trim.sh 2> /dev/null && echo "Trim script exists"
+  [ -e "../drm/covers/${i/$locator /}" ] && coverflag= && echo "Singlet covers" || coverflag=y
 
-  bash ../dl.playlist.sh $locator " $1" " $2" " $3" y
+  bash ../dl.playlist.sh $locator " $1" " $2" " $3" $coverflag
 
-  cp -n -T "../drm/covers/${i/$locator /}.png" "$dir/cover.png" 2> /dev/null && echo "Manual cover"
+  cp -n -T "../drm/covers/${i/$locator /}.png" "$dir/cover.png" 2> /dev/null && echo "Manual cover" || echo "Auto cover"
   if [ ! -f "$dir/cover.png" ]; then
     qwe=$(youtube-dl "https://music.youtube.com/playlist?list=$locator" --playlist-items 1 --get-id)
     bash ../dl.single.image.sh "$qwe"
