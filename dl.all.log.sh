@@ -8,6 +8,11 @@ pkill syncthing
 rm -rf logs dl*.err
 (mkdir logs; mkdir logs/all) 2> /dev/null
 echo -n $$ > logs/pid
-( echo dl; bash dl.main.sh; echo dlc; bash dl.c.main.sh; echo "~FIN~" ) 2>&1 | tee "logs/all/$(date +"%Y%m%d%H%M%S%N").log"
+(
+	[ "$2" != "nx" ] && (echo dl; bash dl.main.sh);
+	[ "$1" != "nx" ] && (echo dlc; bash dl.c.main.sh);
+	echo "~FIN~"
+) 2>&1 | tee "logs/all/$(date +"%Y%m%d%H%M%S%N").log"
 rm logs/pid
 (syncthing -no-browser > /tmp/syncthing.log &) & > /dev/null
+(sleep 360; rm -d logs/dl* && rm -r logs)& >/dev/null
