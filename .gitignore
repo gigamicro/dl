@@ -11,3 +11,4 @@ drm/tree
 *.wav
 *.mp3
 *.flac
+*.sublime-*
