@@ -3,7 +3,7 @@ echo 0 > count
 busy() { ls -f | fgrep .json | wc -l; }
 # busy() { echo -n *.json | sed -e "s/*.json//" | wc -w; }
 # busy() { echo -n $(( $(ps -C youtube-dl | wc -l) - 1 )) }
-youtube-dl "https://music.youtube.com/playlist?list=$1" --match-filter "duration < 1024" --flat-playlist --get-id $2 | \
+youtube-dl "https://music.youtube.com/playlist?list=$1" --flat-playlist --get-id $2 | \
 while read v; do
   expr $(cat count) + 1 > count
   while [ $(busy) -gt 42 ]; do
