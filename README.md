@@ -1,6 +1,6 @@
 # Requirements
 - ffmpeg
-- youtube-dl -> yt-dlp
+- yt-dlp
 - jq
 - opustools
 

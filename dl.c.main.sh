@@ -19,7 +19,7 @@ while read i; do
 
   cp -n -T "../drm/covers/${i/$locator /}.png" "$dir/cover.png" 2> /dev/null && echo "Manual cover" || echo "Auto cover"
   if [ ! -f "$dir/cover.png" ]; then
-    qwe=$(youtube-dl "https://music.youtube.com/playlist?list=$locator" --playlist-items 1 --get-id)
+    qwe=$(yt-dlp "https://music.youtube.com/playlist?list=$locator" --playlist-items 1 --get-id)
     bash ../dl.single.image.sh "$qwe"
     mv "./$qwe.png" cover.png
   fi
