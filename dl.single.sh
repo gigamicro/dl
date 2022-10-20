@@ -1,7 +1,7 @@
 #! /bin/bash
 echo $$
 echo json
-youtube-dl "https://youtube.com/watch?v=$1" -o "$1" --skip-download --write-info-json; mv "./$1.info.json" "./$1.json"
+youtube-dl "https://youtube.com/watch?v=$1" -o "$1" --skip-download --write-info-json; if [ $? != 0 ]; then echo error !; exit 1; fi; mv "./$1.info.json" "./$1.json"
 if [ -z "$4" ]; then
 echo image
 bash ~/Music/dl.single.image.sh "$1" "$3"
