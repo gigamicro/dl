@@ -1,7 +1,8 @@
 # Requirements
 - ffmpeg
-- youtube-dl
+- youtube-dl -> yt-dlp
 - jq
+- opustools
 
 # Scripts
 `. dl.c.main.sh "(playlist settings)"`: For a set of playlists (listed in `dlcplaylists.txt`, max playlist length \~50 videos), will download to ./dlc/(album name)/
