@@ -25,7 +25,7 @@ echo "$nameid"
 
 if [ -z "$4" ]; then
 echo "Opusdec: $4"
-opusdec --force-wav "./$1.opus" "./$1.wav" | grep -v '^\[[/\\-|]\] \d\d:\d\d:\d\d$'
+opusdec --force-wav "./$1.opus" "./$1.wav"
 echo "Opusenc: $4"
 opusenc \
 --picture "./$1.png" \
