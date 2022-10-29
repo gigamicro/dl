@@ -41,7 +41,7 @@ opusenc \
 "./$1.wav" "./$nameid.opus"
 else # imageless
 echo "FFmpeg: $num"
-ffmpeg -hide_banner -i "./$1.opus" -c:a copy \
+ffmpeg -nostdin -hide_banner -i "./$1.opus" -c:a copy \
 -metadata picture="./cover.png" \
 -metadata album="$(jsonget '.album')" \
 -metadata title="$(jsonget '.title')" \
