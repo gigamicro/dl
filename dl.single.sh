@@ -1,5 +1,6 @@
 #! /bin/bash
 echo $$
+if [ -z "$1" ]; then echo "blank !"; exit 1; fi
 
 echo json
 yt-dlp "https://youtube.com/watch?v=$1" -o "$1" --skip-download --write-info-json
