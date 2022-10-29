@@ -3,7 +3,7 @@ echo 0 > count
 busy() { ls -f | fgrep .json | wc -l; }
 # busy() { echo -n *.json | sed -e "s/*.json//" | wc -w; }
 # busy() { echo -n $(( $(ps -C yt-dlp | wc -l) - 1 )) }
-yt-dlp "https://music.youtube.com/playlist?list=$1" --flat-playlist --get-id $2 | \
+yt-dlp "https://music.youtube.com/playlist?list=$1" --flat-playlist --get-id | \
 while read id; do
   expr $(cat count) + 1 > count
   echo "$id" >> list
@@ -14,9 +14,8 @@ while read id; do
   echo -n "$(cat count):$id"
   if [ -z "$(find . -name "*-$id.opus")" ]; then
     echo "..."
-    find . -name "$v.*p??" ! -name "*-$v.opus" -delete
-    rm ../logs/**$v.*o? 2> /dev/null && echo "Deleted old log"
-    bash ../dl.single.sh "$v" "$3" "$4" "$(if [ -n "$5" ]; then cat count; fi)" &> "../logs/$v.log" &
+    find . -name "$id.*p??" -delete
+    bash ../dl.single.sh "$id" "$([ -n "$2" ] && cat count)" &> "../logs/$id.log" &
   else
     echo " already exists in directory"
   fi

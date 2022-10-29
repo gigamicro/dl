@@ -7,7 +7,6 @@
 # Scripts
 `dl.all.log.sh (flag)`: Entry point (rm:remove folder)
 
-`. dl.main.sh "(playlist settings)"`: For a single long playlist (hardcoded), will download to ./dl/
 `dl.c.main.sh`: For a set of playlists (listed in `dlcplaylists.txt`), will download to ./dlc/(name)/
 
 `dl.playlist.sh (pid)`: Downloads all videos in a playlist (limited to 42 concurrent downloads)
