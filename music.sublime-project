@@ -1,1 +1,8 @@
-../Music/music.sublime-project
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	]
+}
