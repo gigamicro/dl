@@ -33,6 +33,7 @@ while read line; do
   mv ./cover.png "$name.m3u" "$dir" 2> /dev/null || echo "No cover/list"
   mv -n ../logs/*.log ../logs/dlc/ 2> /dev/null || echo "No logs"
   mv err "../dlc.$name.err" 2> /dev/null || echo "No err"
+  rm trim.sh 2> /dev/null
 
   echo "Writing playlist"
   cd "$dir"
@@ -42,7 +43,6 @@ while read line; do
   done < ../list
   cd ..
   rm list count 2> /dev/null || echo "No list/count"
-  rm trim.sh 2> /dev/null
   rm ../logs/*.log 2> /dev/null || echo "No ignored logs"
 
   date +"done at %FT%T"
