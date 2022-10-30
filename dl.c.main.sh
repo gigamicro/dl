@@ -25,18 +25,19 @@ while read line; do
     mv "./$coverid.png" cover.png
   fi
 
-  echo "Writing playlist"
-  > "$name.m3u" # empty
-  while read id; do
-    echo ./*-$id.opus >> "$name.m3u"
-  done < list
-
   echo cleaning...
   mv ./*???????????.opus "$dir" 2> /dev/null || echo "No downloads"
   mv ./cover.png "$name.m3u" "$dir" 2> /dev/null || echo "No cover/list"
   mv -n ../logs/*.log ../logs/dlc/ 2> /dev/null || echo "No logs"
   mv err "../dlc.$name.err" 2> /dev/null || echo "No err"
 
+  echo "Writing playlist"
+  cd "$dir"
+  > "$name.m3u" # empty
+  while read id; do
+    echo ./*-$id.opus >> "$name.m3u"
+  done < ../list
+  cd ..
   rm list count 2> /dev/null || echo "No list/count"
   rm trim.sh 2> /dev/null
   rm ../logs/*.log 2> /dev/null || echo "No ignored logs"
