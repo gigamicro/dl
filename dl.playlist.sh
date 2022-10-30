@@ -14,6 +14,7 @@ while read id; do
   echo -n "$(cat count):$id"
   if [ -z "$(find . -name "*-$id.opus")" ]; then
     echo "..."
+    touch active
     find . -name "$id.*p??" -delete
     bash ../dl.single.sh "$id" "$([ -n "$2" ] && cat count)" &> "../logs/$id.log" &
   else
@@ -21,6 +22,7 @@ while read id; do
   fi
 done
 
+rm active 2>/dev/null && sleep 10
 echo "loop ($(busy) left)"
 while [ $(busy) -gt 0 ]; do
   sleep 10
