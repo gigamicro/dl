@@ -2,7 +2,6 @@
 mkdir dlc 2> /dev/null
 cd dlc
 mkdir ../logs/ 2> /dev/null
-mkdir ../logs/dlc 2> /dev/null
 
 cat ../dlcplaylists.txt <(echo) | \
 while read line; do
@@ -31,7 +30,6 @@ while read line; do
   echo cleaning...
   mv ./*???????????.opus "$dir" 2> /dev/null || echo "No downloads"
   mv ./cover.png "$name.m3u" "$dir" 2> /dev/null || echo "No cover/list"
-  mv -n ../logs/*.log ../logs/dlc/ 2> /dev/null || echo "No logs"
   mv err "../dlc.$name.err" 2> /dev/null || echo "No err"
   rm trim.sh 2> /dev/null
 
@@ -43,7 +41,6 @@ while read line; do
   done < ../list
   cd ..
   rm list count 2> /dev/null || echo "No list/count"
-  rm ../logs/*.log 2> /dev/null || echo "No ignored logs"
 
   date +"done at %FT%T"
 done
