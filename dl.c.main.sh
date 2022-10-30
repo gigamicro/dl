@@ -21,8 +21,11 @@ while read line; do
   if [ -z "$coverflag" -a ! -f "$dir/cover.png" ]; then
     echo "Auto cover"
     coverid=$(yt-dlp "https://music.youtube.com/playlist?list=$listid" --playlist-items 1 --get-id)
+    yt-dlp "https://youtube.com/watch?v=$coverid" -o "$coverid" --skip-download --write-info-json
+    mv "./$coverid.info.json" "./$coverid.json"
     bash ../dl.single.image.sh "$coverid"
     mv "./$coverid.png" cover.png
+    rm "./$coverid.json"
   fi
 
   echo cleaning...
