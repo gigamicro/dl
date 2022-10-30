@@ -1,7 +1,6 @@
 #! /bin/bash
 cd ~/Music
 pkill syncthing
-date +"%FT%T" >> ~/dl-times
 
 # [ "$1" == "rm" ] && rm -rf dlc && echo "removed ./dlc"
 rm -rf logs dlc.*.err
