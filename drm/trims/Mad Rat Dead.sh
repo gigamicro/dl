@@ -1,2 +1,2 @@
 #! /bin/bash
-sed 's/ *- Mad Rat Dead-/-/g'
+sed 's/ *- Mad Rat Dead//g'

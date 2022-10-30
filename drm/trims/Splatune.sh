@@ -1,2 +1,2 @@
 #! /bin/bash
-sed 's/   Splatoon OST-/-/g'
+sed 's/   Splatoon OST//g'
