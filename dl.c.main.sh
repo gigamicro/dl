@@ -19,7 +19,7 @@ while read line; do
   cp -n -T "../drm/covers/$name.png" "$dir/cover.png" 2> /dev/null && echo "Manual cover"
   if [ -n "$coverflag" -a ! -f "$dir/cover.png" ]; then
     echo "Auto cover"
-    coverid=$(yt-dlp "https://music.youtube.com/playlist?list=$listid" --playlist-items 1 --get-id)
+    coverid=$(yt-dlp "https://music.youtube.com/playlist?list=$listid" --playlist-items 1 --flat-playlist --get-id)
     yt-dlp "https://youtube.com/watch?v=$coverid" -o "$coverid" --skip-download --write-info-json
     mv "./$coverid.info.json" "./$coverid.json"
     bash ../dl.single.image.sh "$coverid"
