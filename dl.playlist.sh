@@ -3,7 +3,7 @@ echo 0 > count
 busy() { ls -f | fgrep .json | wc -l; }
 # busy() { echo -n *.json | sed -e "s/*.json//" | wc -w; }
 # busy() { echo -n $(( $(ps -C yt-dlp | wc -l) - 1 )) }
-yt-dlp "https://music.youtube.com/playlist?list=$1" --flat-playlist --get-id | \
+yt-dlp "https://music.youtube.com/playlist?list=$1" --flat-playlist --get-id $([ -n "$2" ] && echo "--playlist-reverse") | \
 while read id; do
   expr $(cat count) + 1 > count
   echo "$id" >> list
