@@ -25,12 +25,12 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
   # cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"*; done && echo "Deleted ignored songs"
 
   yt-dlp --embed-metadata --format 'ba*' -x \
-  $(if [[ "$listid" == OLAK5uy_* ]] || [[ "$listid" == PL* ]] || [[ "$listid" == UU* ]]; then
-    echo "\"https://music.youtube.com/playlist?list=$listid\""
+  $(if [ -f "$listid" ]; then
+    echo --batch-file "$listid"
   else
-    echo "--batch-file \"$listid\""
+    echo "https://music.youtube.com/playlist?list=$listid"
   fi) \
-  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\"" \
+  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\" || '$scriptdir/square.sh' *\" [%(id)s].jpg\"" \
   --no-overwrites --download-archive "$basedir/$name/$name.archive" \
   --concurrent-fragments 32 \
   $(if [ "$coverflag" = "n" ]; then
@@ -54,10 +54,10 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
 
   echo "Writing playlist"
   > "./$name.m3u"
-  (if [[ "$listid" == OLAK5uy_* ]] || [[ "$listid" == PL* ]] || [[ "$listid" == UU* ]]; then
-    yt-dlp "https://youtube.com/playlist?list=$listid" --flat-playlist --print id
-  else
+  (if [ -f "$listid" ]; then
     sed 's/^https:\/\/youtu.be\///' <"$listid"
+  else
+    yt-dlp "https://youtube.com/playlist?list=$listid" --flat-playlist --print id
   fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
