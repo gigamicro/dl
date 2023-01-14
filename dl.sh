@@ -61,7 +61,7 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
   fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
-  ) >"/tmp/dl_${line%% *}.log" 2>&1 &
+  ) >"/tmp/dl_${line#* }.log" 2>&1 &
 done < "$scriptdir/playlists.txt"
 # date +"complete at %FT%T"
 echo "sure thing boss"
