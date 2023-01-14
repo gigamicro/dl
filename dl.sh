@@ -30,7 +30,7 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
   else
     echo "--batch-file \"$listid\""
   fi) \
-  --embed-thumbnail --exec before_dl:"sh '$scriptdir/square.sh' *\" [%(id)s].webp\"" \
+  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\"" \
   --no-overwrites --download-archive "$basedir/$name/$name.archive" \
   --concurrent-fragments 32 \
   $(if [ "$coverflag" = "n" ]; then
