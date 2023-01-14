@@ -19,7 +19,7 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
     echo "Coverflag set"
   fi
 
-  rm *.webp *.part 2> /dev/null && echo "Deleted remains"
+  rm *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
   ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$basedir/$name/$name.archive"
   # cat "$scriptdir/ignore/$name.archive" >> "$basedir/$name/$name.archive" 2>/dev/null && echo "Added ignore to archive"
   # cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"*; done && echo "Deleted ignored songs"
