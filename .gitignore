@@ -10,5 +10,7 @@ drm/tree/*
 *.ogg
 *.wav
 *.mp3
+*.mp4
+*.m4a
 *.flac
 *.sublime-workspace
