@@ -1,4 +1,4 @@
-/home/gigamicro/dl/batch.txt faV
+/home/gigamicro/dl/faV.txt faV
 OLAK5uy_mw0l7DI2sxPY1caoqxwTxK0wL0pInhr8c Portal 2
 OLAK5uy_luvluDiilokMQ1Q6KC7XSkqZqFMSAXjQ4 QUBE 2
 OLAK5uy_m7k3YaSggC7X3AsZAzag44_Q9sGTzIMno Warframe
