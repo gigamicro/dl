@@ -60,6 +60,8 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
     yt-dlp "https://youtube.com/playlist?list=$listid" --flat-playlist --print id
   fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
 
+  rm "$basedir/$name/$name.archive"
+
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
   ) >"/tmp/dl_${line#* }.log" 2>&1 &
 done < "$scriptdir/playlists.txt"
