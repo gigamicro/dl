@@ -1,6 +1,6 @@
 #!/bin/sh
 scriptdir=~/dl
-basedir=~/Music/yt
+basedir=~/Music/dl
 mkdir "$basedir" 2> /dev/null
 
 while read line; do  if [ -z "$line" ]; then break; fi; (
