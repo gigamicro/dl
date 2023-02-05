@@ -32,12 +32,12 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   else
     echo "$listurl"
   fi) \
-  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\" || '$scriptdir/square.sh' *\" [%(id)s].jpg\"" \
-  --no-overwrites --download-archive "$basedir/$name/$name.archive" \
+  --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
-  $(if [ "$coverflag" = "n" ]; then
+  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\" || '$scriptdir/square.sh' *\" [%(id)s].jpg\"" \
+  $(if [ "$coverflag" != "y" ]; then
     echo "--no-embed-thumbnail --no-exec --parse-metadata playlist_index:%(track_number)s "
-  fi) 
+  fi)
 
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
   # --playlist-random \
