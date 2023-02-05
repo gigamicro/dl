@@ -16,10 +16,13 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
       sed 's/ - Topic$//')"
   fi
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
+  dir="$basedir/$name"
+  echo "$listurl -> $dir."
+  mkdir -v "$dir" 2> /dev/null || echo "Directory exists"
+  cd "$dir" || exit
 
   rm -v *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
-  ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$basedir/$name/$name.archive"
-  cat "$scriptdir/ignore/$name.archive" >> "$basedir/$name/$name.archive" 2>/dev/null && echo "Added ignore to archive"
+  ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$dir/$name.archive"
   cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"* 2>/dev/null; done && echo "Deleted ignored songs"
 
   yt-dlp --embed-metadata --format 'ba*' -x \
@@ -58,7 +61,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     yt-dlp "$listurl" --flat-playlist --print id
   fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
 
-  rm "$basedir/$name/$name.archive"
+  rm "$dir/$name.archive"
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
   ) >"/tmp/dl_${listurl##*/}.log" 2>&1 &
