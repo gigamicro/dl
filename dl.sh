@@ -26,7 +26,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   $(if [ -f "$listid" ]; then
     echo --batch-file "$listid"
   else
-    echo "https://music.youtube.com/playlist?list=$listid"
+    echo "$listurl"
   fi) \
   --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\" || '$scriptdir/square.sh' *\" [%(id)s].jpg\"" \
   --no-overwrites --download-archive "$basedir/$name/$name.archive" \
@@ -41,7 +41,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     echo "Manual cover"
   elif [ "$coverflag" = "n" -a ! -f "$dir/cover.png" ]; then
     echo "Auto cover"
-    yt-dlp "https://youtube.com/playlist?list=$listid" \
+    yt-dlp "$listurl" \
     --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
     sh "$scriptdir/square.sh" "cover.webp";
     ffmpeg -i "cover.webp" cover.png
@@ -55,13 +55,13 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   (if [ -f "$listid" ]; then
     sed 's/^https:\/\/youtu.be\///' <"$listid"
   else
-    yt-dlp "https://youtube.com/playlist?list=$listid" --flat-playlist --print id
+    yt-dlp "$listurl" --flat-playlist --print id
   fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
 
   rm "$basedir/$name/$name.archive"
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
   ) >"/tmp/dl_${listurl##*/}.log" 2>&1 &
-done < "$scriptdir/playlists.txt"
+done < "$scriptdir/playlists.m3u"
 # date +"complete at %FT%T"
 echo "sure thing boss"
