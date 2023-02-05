@@ -23,8 +23,8 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"* 2>/dev/null; done && echo "Deleted ignored songs"
 
   yt-dlp --embed-metadata --format 'ba*' -x \
-  $(if [ -f "$listid" ]; then
-    echo --batch-file "$listid"
+  $(if [ -f "$listurl" ]; then
+    echo --batch-file "$listurl"
   else
     echo "$listurl"
   fi) \
@@ -52,8 +52,8 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   echo "Writing playlist"
   > "./$name.m3u"
-  (if [ -f "$listid" ]; then
-    sed 's/^https:\/\/youtu.be\///' <"$listid"
+  (if [ -f "$listurl" ]; then
+    sed 's/^https:\/\/youtu.be\///' <"$listurl"
   else
     yt-dlp "$listurl" --flat-playlist --print id
   fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
