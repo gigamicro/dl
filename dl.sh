@@ -23,6 +23,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   rm -v *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
   ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$dir/$name.archive"
+  cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
   cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"* 2>/dev/null; done && echo "Deleted ignored songs"
 
   yt-dlp --embed-metadata --format 'ba*' -x \
