@@ -1,0 +1,1 @@
+sed 's/ .*//' <~/dl/playlists.m3u | tee /dev/fd/2 | while read i; do yt-dlp "$i" --playlist-end 1 --flat-playlist --print '%(uploader)s: %(playlist_title)s'; done
