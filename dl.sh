@@ -17,7 +17,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   fi
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
 
-  rm *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
+  rm -v *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
   ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$basedir/$name/$name.archive"
   cat "$scriptdir/ignore/$name.archive" >> "$basedir/$name/$name.archive" 2>/dev/null && echo "Added ignore to archive"
   cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"* 2>/dev/null; done && echo "Deleted ignored songs"
