@@ -3,21 +3,19 @@ scriptdir=~/dl
 basedir=~/Music/dl
 mkdir "$basedir" 2> /dev/null
 
-while read line; do  if [ -z "$line" ]; then break; fi; (
-  # cd "$basedir"
-  listid="${line%% *}"
-  name="${line#$listid }"
-  dir="$basedir/$name"
-  echo "$listid -> $dir."
-  mkdir "$dir" 2> /dev/null || echo "Directory exists"
-  cd "$dir" || exit
-  if [ -e "$scriptdir/covers/$name" ]; then
-    coverflag=y
-    echo "Singlet covers"
+while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
+  if [ -f "$listurl" ]; then
+    name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
   else
-    coverflag=n
-    echo "Coverflag set"
+    name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
+      sed 's/^Album - //; s/ *(.*)$//; s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;  s/ *-.*$//;   s/^NA$//; s/^[SongVideo]*s$//')"
+    [ -z "$name" -o "$name" = 'NA' ] && echo 'getting artist'   && coverflag=y && echo "Singlet covers" && \
+    name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print artist)"
+    [ -z "$name" -o "$name" = 'NA' ] && echo 'getting uploader' && \
+    name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print uploader | \
+      sed 's/ - Topic$//')"
   fi
+  [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
 
   rm *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
   ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$basedir/$name/$name.archive"
@@ -63,7 +61,7 @@ while read line; do  if [ -z "$line" ]; then break; fi; (
   rm "$basedir/$name/$name.archive"
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
-  ) >"/tmp/dl_${line#* }.log" 2>&1 &
+  ) >"/tmp/dl_${listurl##*/}.log" 2>&1 &
 done < "$scriptdir/playlists.txt"
 # date +"complete at %FT%T"
 echo "sure thing boss"

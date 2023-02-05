@@ -7,5 +7,4 @@
 `square.sh`: Crops image $1 to square, centered, inplace
 
 # Dirs
-`covers/`: contains manual .png covers and individual-cover markers for `dl.sh`
 `ignore`: contains yt-dlp `.archive`-format lists of videos to ignore, per playlist
