@@ -40,17 +40,17 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
   # --playlist-random \
-  if cp -n -T "$scriptdir/covers/$name.png" "$dir/cover.png" 2> /dev/null; then
-    echo "Manual cover"
-  elif [ "$coverflag" = "n" -a ! -f "$dir/cover.png" ]; then
+  if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag set)"
+  elif [ -f "$dir/cover.png" ]; then echo "No downloaded cover (cover exists)"
+  elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
+  else
     echo "Auto cover"
     yt-dlp "$listurl" \
     --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
-    sh "$scriptdir/square.sh" "cover.webp";
+    sh "$scriptdir/square.sh" "cover.webp"
     ffmpeg -i "cover.webp" cover.png
     rm "cover.webp"
-  else
-    echo "No cover"
+    echo -n "No downloaded cover "
   fi
 
   echo "Writing playlist"
