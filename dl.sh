@@ -18,6 +18,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
   dir="$basedir/$name"
   echo "$listurl -> $dir."
+  ln -svrT "/tmp/dl_${listurl##*/}.log" "/tmp/dl!_$name.log"
   mkdir -v "$dir" 2> /dev/null || echo "Directory exists"
   cd "$dir" || exit
 
