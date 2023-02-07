@@ -9,11 +9,11 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   else
     name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
       sed 's/^Album - //; s/ *(.*)$//; s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;  s/ *-.*$//;   s/^NA$//; s/^[SongVideo]*s$//')"
-    [ -z "$name" -o "$name" = 'NA' ] && echo 'getting artist'   && coverflag=y && echo "Singlet covers" && \
-    name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print artist)"
-    [ -z "$name" -o "$name" = 'NA' ] && echo 'getting uploader' && \
-    name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print uploader | \
-      sed 's/ - Topic$//')"
+    if [ -z "$name" -o "$name" = 'NA' ] then
+      echo 'getting uploader'
+      coverflag=y; echo "Singlet covers"
+      name="$(yt-dlp "$listurl" --flat-playlist --print uploader | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed 's/ - Topic$//')"
+    fi
   fi
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
   dir="$basedir/$name"
