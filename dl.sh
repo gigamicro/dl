@@ -51,6 +51,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     echo "Auto cover"
     yt-dlp "$listurl" \
     --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
+    ffmpeg -i cover.* cover.webp
     sh "$scriptdir/square.sh" "cover.webp"
     ffmpeg -i "cover.webp" cover.png
     rm "cover.webp"
