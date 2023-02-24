@@ -6,6 +6,7 @@ mkdir "$basedir" 2> /dev/null
 while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   if [ -f "$listurl" ]; then
     name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
+    coverflag=y && echo "Singlet covers - special case 1"
   else
     name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
       sed 's/^Album - //; s/ *(.*)$//; s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;  s/ *-.*$//;   s/^NA$//; s/^[SongVideo]*s$//')"
@@ -14,6 +15,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
       coverflag=y; echo "Singlet covers"
       name="$(yt-dlp "$listurl" --flat-playlist --print uploader | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed 's/ - Topic$//')"
     fi
+    [ "$name" = 'ENA' ] && coverflag=y && echo "Singlet covers - special case 2"
   fi
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
   dir="$basedir/$name"
