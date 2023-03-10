@@ -30,6 +30,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"* 2>/dev/null; done && echo "Deleted ignored songs"
 
   yt-dlp --embed-metadata --format 'ba*' -x \
+  --playlist-random \
   $(if [ -f "$listurl" ]; then
     echo --batch-file "$listurl"
   else
@@ -43,7 +44,6 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   fi)
 
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
-  # --playlist-random \
   if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag set)"
   elif [ -f "$dir/cover.png" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
