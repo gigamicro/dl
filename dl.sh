@@ -2,6 +2,7 @@
 scriptdir=~/dl
 basedir=~/Music/dl
 mkdir "$basedir" 2> /dev/null
+mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 
 while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   if [ -f "$listurl" ]; then
@@ -20,14 +21,14 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
   dir="$basedir/$name"
   echo "$listurl -> $dir."
-  ln -svrT "/tmp/dl_${listurl##*/}.log" "/tmp/dl!_$name.log"
+  ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/$name.log"
   mkdir -v "$dir" 2> /dev/null || echo "Directory exists"
   cd "$dir" || exit
 
   rm -v *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
   ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$dir/$name.archive"
   cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
-  cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm *"[$id]"* 2>/dev/null; done && echo "Deleted ignored songs"
+  cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm -v *"[$id]"* 2>/dev/null; done
 
   yt-dlp --embed-metadata --format 'ba*' -x \
   $(if [ -f "$listurl" ]; then
@@ -69,7 +70,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   rm "$dir/$name.archive"
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
-  ) >"/tmp/dl_${listurl##*/}.log" 2>&1 &
+  ) >"/tmp/dl/log/${listurl##*/}.log" 2>&1 &
 done < "$scriptdir/playlists.m3u"
 # date +"complete at %FT%T"
 echo "sure thing boss"
