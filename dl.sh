@@ -10,7 +10,16 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     coverflag=y && echo "Singlet covers - special case 1"
   else
     name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
-      sed 's/^Album - //; s/ *(.*)$//; s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;  s/ *-.*$//;   s/^NA$//; s/^[SongVideo]*s$//;   s/^awfuless presents$//')"
+      sed '
+      s/^Album - //;
+      s/ *(.*)$//;
+      s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;
+      s/ *-.*$//;
+      s/^NA$//;
+      s/^Songs$//;
+      s/^Videos$//;
+      s/^awfuless presents$//;
+      ')"
     if [ -z "$name" -o "$name" = 'NA' ]; then
       echo 'getting channel'
       coverflag=y; echo "Singlet covers"
