@@ -9,6 +9,7 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
     coverflag=y && echo "Singlet covers - special case 1"
   else
+    # echo "album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | sed 's/^........//')" &
     name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
       sed '
       s/^Album - //;
