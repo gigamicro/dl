@@ -5,6 +5,7 @@ mkdir "$basedir" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 
 while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
+  yt-dlp --version || echo "$PATH"
   if [ -f "$listurl" ]; then
     name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
     coverflag=y && echo "Singlet covers - special case 1"
