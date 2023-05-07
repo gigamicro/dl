@@ -3,8 +3,9 @@ scriptdir=~/dl
 basedir=~/Music/dl
 mkdir "$basedir" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
+# shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 
-while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
+while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
   if [ -f "$listurl" ]; then
     name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
@@ -39,10 +40,10 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
   mkdir -v "$dir" 2> /dev/null || echo "Directory exists"
   cd "$dir" || exit
 
-  rm -v *.mp4 *.webp *.part *.jpg 2> /dev/null && echo "Deleted remains"
-  ls | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$dir/$name.archive"
+  rm -v ./*.mp4 ./*.webp ./*.part ./*.jpg 2> /dev/null && echo "Deleted remains"
+  find . -maxdepth 1 | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$dir/$name.archive"
   cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
-  cat "$scriptdir/ignore/$name.archive" 2>/dev/null | sed 's/youtube //' | while read id; do rm -v *"[$id]"* 2>/dev/null; done
+  sed 's/youtube //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
 
   yt-dlp --embed-metadata --format 'ba*' -x \
   $(if [ -f "$listurl" ]; then
@@ -70,16 +71,16 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     sh "$scriptdir/square.sh" "cover.webp"
     ffmpeg -i "cover.webp" cover.png
     rm "cover.webp"
-    echo -n "No downloaded cover "
+    echo "No downloaded cover "
   fi
 
   echo "Writing playlist"
-  > "./$name.m3u"
+  true > "./$name.m3u"
   (if [ -f "$listurl" ]; then
     sed 's/^https:\/\/youtu.be\///' <"$listurl"
   else
     yt-dlp "$listurl" --flat-playlist --print id
-  fi) | while read id; do echo ./*$id* >> "./$name.m3u"; done
+  fi) | while read -r id; do echo ./*"$id"* >> "./$name.m3u"; done
 
   rm "$dir/$name.archive"
 
