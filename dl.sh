@@ -25,7 +25,10 @@ while read listurl; do  if [ -z "$listurl" ]; then break; fi; (
     if [ -z "$name" -o "$name" = 'NA' ]; then
       echo 'getting channel'
       coverflag=y; echo "Singlet covers"
-      name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed 's/ - Topic$//')"
+      name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
+        s/ - Topic$//;
+        s/\W*official channel$//;
+        ')"
     fi
     [ "$name" = 'ENA' ] && coverflag=y && echo "Singlet covers - special case 2"
   fi
