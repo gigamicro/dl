@@ -41,7 +41,8 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   cd "$dir" || exit
 
   rm -v ./*.mp4 ./*.webp ./*.part ./*.jpg 2> /dev/null && echo "Deleted remains"
-  find . -maxdepth 1 | sed 's/.*\[/youtube /;s/\].[.a-z0-9]*//' > "$dir/$name.archive"
+  # find . -maxdepth 1 -name '*.temp*' -delete
+  find . -maxdepth 1 | sed 's/^.* \[\([0-9a-zA-Z_-]\{11\}\)\].*$/youtube \1/' > "$dir/$name.archive"
   cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
   sed 's/youtube //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
 
