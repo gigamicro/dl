@@ -1,21 +1,23 @@
 #!/bin/sh
 ls -d ~/Music/dl/* | while read f; do
-  echo "\t$f"
+  # echo "\t$f"
   ls -d "$f"/*.m4a | while read i; do
     if ffprobe "$i" 2>&1 | grep -q \(attached\ pic\); then
       # echo 'y'
       if [ -f "$f/cover.png" ]; then
-        echo 'has cover and gen cover:' "$i"
+        echo "redundant: $i"
+        # echo 'has cover and gen cover:' "$i"
       # else
-      #   echo 'y'
+      #   echo ' y'
       fi
     else
       # echo 'n'
       if [ -f "$f/cover.png" ]; then
-        # echo 'n'
+        # echo ' n'
         true
       else
-        echo 'has no cover or gen cover:' "$i"
+        echo "missing  : $i"
+        # echo 'has no cover or gen cover:' "$i"
       fi
     fi
   done
