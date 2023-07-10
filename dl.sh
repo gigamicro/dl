@@ -5,6 +5,9 @@ mkdir "$basedir" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 
+[ -x "$scriptdir/square.sh" ] || { echo err: square.sh missing; exit 1; }
+# [ -d "$scriptdir/ignore" ] || echo no ignores
+
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
   if [ -f "$listurl" ]; then
@@ -43,8 +46,10 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   rm -v ./*.mp4 ./*.webp ./*.part ./*.jpg 2> /dev/null && echo "Deleted remains"
   # find . -maxdepth 1 -name '*.temp*' -delete
   find . -maxdepth 1 | sed 's/^.* \[\([0-9a-zA-Z_-]\{11\}\)\].*$/youtube \1/' > "$dir/$name.archive"
-  cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
-  sed 's/youtube //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
+  if [ -d "$scriptdir/ignore" ]; then
+    cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
+    sed 's/youtube //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
+  fi
 
   yt-dlp --embed-metadata --format 'ba*' -x \
   $(if [ -f "$listurl" ]; then

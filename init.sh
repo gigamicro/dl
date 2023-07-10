@@ -14,7 +14,7 @@ fi
 "$scriptdir/dl.sh"
 "$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
 if [ "$1" = "z" ]; then
-	"$scriptdir/archivecheck.sh" | while read -r i; do rm "$i"; done
+	"$scriptdir/archivecheck.sh" | while read -r i; do rm -v "$i"; done
 	"$scriptdir/faVduplicatecheck.sh" | grep -o '\[[a-zA-Z0-9_-]\{11\}\]' | while read -r i; do
 		sed -e "/$i$/ s/^#*/#/" -i "$scriptdir/faV.m3u" && rm -v "$(cat "$scriptdir/basedir")/faV/$i"
 	done
