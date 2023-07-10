@@ -1,6 +1,6 @@
 #!/bin/sh
-scriptdir=~/dl
-basedir=~/Music/dl
+scriptdir="$(dirname "$0")"
+basedir="$(cat "$scriptdir/basedir")"
 mkdir "$basedir" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
