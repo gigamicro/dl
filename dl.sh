@@ -90,3 +90,5 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 done < "$scriptdir/playlists.m3u"
 # date +"complete at %FT%T"
 echo "sure thing boss"
+wait
+echo "done boss"
