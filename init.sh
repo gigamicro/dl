@@ -3,6 +3,7 @@ scriptdir="$(dirname "$0")"
 echo ===untrash===
 "$scriptdir/untrash.sh"
 echo ===toignore===
+mkdir "$scriptdir/ignore" 2>/dev/null
 "$scriptdir/toignore.sh"
 if [ "$1" = "z" ]; then
 	echo ===covercheck===
