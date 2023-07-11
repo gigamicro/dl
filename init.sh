@@ -16,6 +16,8 @@ if [ "$1" = "z" ]; then
 fi
 echo ===dl===
 "$scriptdir/dl.sh"
+echo ===recentinlog===
+"$scriptdir/recentinlog.sh"
 echo ===m3ucheck===
 "$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
 if [ "$1" = "z" ]; then
