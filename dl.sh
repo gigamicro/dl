@@ -12,7 +12,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
   if [ -f "$listurl" ]; then
     name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
-    coverflag=y && echo "Singlet covers - special case 1"
+    coverflag=y && echo "Singlet covers - file playlist"
   else
     # echo "album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | sed 's/^........//')" &
     name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
@@ -26,7 +26,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
       s/^Videos$//;
       s/^awfuless presents$//;
       ')"
-    if [ -z "$name" -o "$name" = 'NA' ]; then
+    if [ -z "$name" ]; then
       echo 'getting channel'
       coverflag=y; echo "Singlet covers"
       name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
@@ -34,7 +34,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
         s/\W*official channel$//;
         ')"
     fi
-    [ "$name" = 'ENA' ] && coverflag=y && echo "Singlet covers - special case 2"
+    [ "$name" = 'ENA' ] && coverflag=y && echo "Singlet covers - special case"
   fi
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
   dir="$basedir/$name"
@@ -45,6 +45,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   rm -v ./*.mp4 ./*.webp ./*.part ./*.jpg 2> /dev/null && echo "Deleted remains"
   # find . -maxdepth 1 -name '*.temp*' -delete
+  
   find . -maxdepth 1 | sed 's/^.* \[\([0-9a-zA-Z_-]\{11\}\)\].*$/youtube \1/' > "$dir/$name.archive"
   if [ -d "$scriptdir/ignore" ]; then
     cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
@@ -66,18 +67,16 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   #--playlist-random -i \
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
-  if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag set)"
+  if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag unset)"
   elif [ -f "$dir/cover.png" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
   else
     echo "Auto cover"
     yt-dlp "$listurl" \
     --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
-    ffmpeg -i cover.* cover.webp
-    sh "$scriptdir/square.sh" "cover.webp"
-    ffmpeg -i "cover.webp" cover.png
-    rm "cover.webp"
-    echo "No downloaded cover "
+    ffmpeg -i cover.* cover.png
+    sh "$scriptdir/square.sh" "cover.png"
+    # echo "No downloaded cover "
   fi
 
   echo "Writing playlist"

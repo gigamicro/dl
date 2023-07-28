@@ -1,24 +1,12 @@
 #!/bin/sh
-ls -d ~/Music/dl/* | while read f; do
-  # echo "\t$f"
-  ls -d "$f"/*.m4a | while read i; do
-    if ffprobe "$i" 2>&1 | grep -q \(attached\ pic\); then
-      # echo 'y'
-      if [ -f "$f/cover.png" ]; then
-        echo "redundant: $i"
-        # echo 'has cover and gen cover:' "$i"
-      # else
-      #   echo ' y'
-      fi
-    else
-      # echo 'n'
-      if [ -f "$f/cover.png" ]; then
-        # echo ' n'
-        true
-      else
-        echo "missing  : $i"
-        # echo 'has no cover or gen cover:' "$i"
-      fi
+find "$(cat "$(dirname "$0")/basedir")" -name '*.m4a' | while read -r i; do
+  if ffprobe "$i" 2>&1 | grep -q \(attached\ pic\); then
+    if   [ -f "$(dirname "$i")/cover.png" ]; then
+      echo "redundant: $i"
     fi
-  done
+  else
+    if ! [ -f "$(dirname "$i")/cover.png" ]; then
+      echo "missing  : $i"
+    fi
+  fi
 done

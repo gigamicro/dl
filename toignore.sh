@@ -1,14 +1,7 @@
 #!/bin/sh
-# shellcheck disable=SC2002
-scriptdir="$(dirname "$0")"
-[ -f ~/Music/maybe\ remove.m3u ] || exit 0
-mkdir "$scriptdir/ignore/" 2>/dev/null
-cd "$scriptdir/ignore/" || exit
-cat ~/Music/maybe\ remove.m3u | \
-grep '\[...........]' | \
-sed 's/^Music\/dl\///; s/\/.*\[/\t/; s/].m4a//' | \
-while read -r i; do
-	echo "youtube ${i#*	}" | tee /dev/fd/2 >>"./${i%	*}.archive"
-	echo "	\\-> ./${i%	*}.archive" >/dev/fd/2
-done
-rm ~/Music/maybe\ remove.m3u
+[ -f "$1" ] || exit 0
+mkdir -v "$(dirname "$0")/ignore/" 2>/dev/null
+grep ' \[[a-zA-Z0-9_-]\{11\}\]\.' "$1" | while read -r i; do
+	basename "$i" | sed 's/^.* \[\([a-zA-Z0-9_-]\{11\}\)\]\.[^/]*$/youtube \1/' | tee /dev/fd/2 >>"$(dirname "$0")/ignore/$(dirname "$i").archive" && \
+	echo "	\\-> $(dirname "$i").archive" >/dev/fd/2
+done && rm "$1"
