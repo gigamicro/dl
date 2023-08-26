@@ -24,6 +24,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
       s/^NA$//;
       s/^Songs$//;
       s/^Videos$//;
+      s/^Uploads.*$//;
       s/^awfuless presents$//;
       ')"
     if [ -z "$name" ]; then
@@ -43,7 +44,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   mkdir -v "$dir" 2> /dev/null || echo "Directory exists"
   cd "$dir" || exit
 
-  rm -v ./*.mp4 ./*.webp ./*.part ./*.jpg 2> /dev/null && echo "Deleted remains"
+  rm -v ./*.mp4 ./*.webp ./*].png ./*.part ./*.jpg ./*.temp.* 2> /dev/null && echo "Deleted remains"
   # find . -maxdepth 1 -name '*.temp*' -delete
   
   find . -maxdepth 1 | sed 's/^.* \[\([0-9a-zA-Z_-]\{11\}\)\].*$/youtube \1/' > "$dir/$name.archive"
@@ -85,7 +86,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
     sed 's/^https:\/\/youtu.be\///' <"$listurl"
   else
     yt-dlp "$listurl" --flat-playlist --print id
-  fi) | while read -r id; do echo ./*"$id"* >> "./$name.m3u"; done
+  fi) | while read -r id; do find -maxdepth 1 -name '*\['"$id].*" >> "./$name.m3u"; done
 
   rm "$dir/$name.archive"
 
