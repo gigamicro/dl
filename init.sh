@@ -20,9 +20,25 @@ echo ===toignore===
 # 	"$scriptdir/covercheck.sh"
 # fi
 echo ===dl===
-"$scriptdir/dl.sh"
-echo ===recentinlog===
-"$scriptdir/recentinlog.sh"
+# "$scriptdir/dl.sh" & pid=$!
+# tail --pid=$pid -f /tmp/dl/link/* 2>&1 | \
+"$scriptdir/dl.sh" &
+jobs -p > /tmp/$$.pid
+tail --pid="$(head -n 1 /tmp/$$.pid && rm /tmp/$$.pid)" -f /tmp/dl/link/* 2>&1 | \
+grep -e '^\[download] Downloading item [0-9]* of [0-9]*$' -e '^==> .* <==' | \
+sed 's/^\[download] Downloading item //; ss of s/s; ss^==> .*/s==> s; ss.log <==$s <==s' | \
+while read -r i; do
+	case $i in
+	'==> '*' <==') echo "$i" | head -c -5 |tail -c +5 >/tmp/$$.currentsource ;;
+	*/*) echo ": $i" | cat /tmp/$$.currentsource - ;;
+	 *) echo "err: '$i'" ;;
+	esac
+done
+rm /tmp/$$.currentsource
+echo ===ps===
+ps | tail
+# echo ===recentinlog===
+# "$scriptdir/recentinlog.sh"
 echo ===m3ucheck \| toarchive===
 "$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
 if [ "$1" = "z" ]; then
