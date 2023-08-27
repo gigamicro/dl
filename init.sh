@@ -29,11 +29,18 @@ if [ "$1" = "z" ]; then
 	echo ===archivecheck \| rm===
 	"$scriptdir/archivecheck.sh" | while read -r i; do rm -v "$i"; done
 	find "$(cat "$scriptdir/archivedir")" -type d -empty -fprint /dev/stdout -delete
+	"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v
+	echo ===archiveduplicatecheck \| rm===
+	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v
 	echo ===faVduplicatecheck \| fromfaV===
 	"$scriptdir/faVduplicatecheck.sh" | grep -o ' \[[a-zA-Z0-9_-]\{11\}\]\.' | grep -o '[a-zA-Z0-9_-]\{11\}' | "$scriptdir/fromfaV.sh"
 else
 	echo ===archivecheck===
 	"$scriptdir/archivecheck.sh"
+	echo ===archivecheckstrict===
+	"$scriptdir/archivecheckstrict.sh"
+	echo ===archiveduplicatecheck===
+	"$scriptdir/archiveduplicatecheck.sh"
 	echo ===faVduplicatecheck===
 	"$scriptdir/faVduplicatecheck.sh"
 fi
