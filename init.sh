@@ -4,21 +4,6 @@ echo ===untrash===
 "$scriptdir/untrash.sh"
 echo ===toignore===
 "$scriptdir/toignore.sh" ~/Music/maybe\ remove.m3u
-# if [ "$1" = "z" ]; then
-# echo ===m3ucheck \| toarchive===
-# "$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
-# 	echo ===covercheck \| rm===
-# 	"$scriptdir/covercheck.sh" | while read -r i; do
-# 		case $i in
-# 		r*) rm -v "${i#*: }" "$(dirname ${i#*: })/cover".* ;;
-# 		m*) rm -v "${i#*: }" ;;
-# 		 *) echo "covertest err: '$i'" ;;
-# 		esac
-# 	done
-# else
-# 	echo ===covercheck===
-# 	"$scriptdir/covercheck.sh"
-# fi
 echo ===dl\&recentinlog===
 "$scriptdir/dl.sh" & "$scriptdir/recentinlog.sh" $!
 if [ "$1" = "z" ]; then
