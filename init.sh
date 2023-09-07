@@ -19,11 +19,11 @@ echo ===toignore===
 # 	echo ===covercheck===
 # 	"$scriptdir/covercheck.sh"
 # fi
-echo ===m3ucheck \| toarchive===
-"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
 echo ===dl\&recentinlog===
 "$scriptdir/dl.sh" & "$scriptdir/recentinlog.sh" $!
 if [ "$1" = "z" ]; then
+	echo ===m3ucheck \| toarchive===
+	"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
 	echo ===archivecheck \| rm===
 	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
 	echo ===archivecheckstrict \| rm===
@@ -37,6 +37,8 @@ if [ "$1" = "z" ]; then
 	echo ===faVduplicatecheck \| fromfaV===
 	"$scriptdir/faVduplicatecheck.sh" | grep -o ' \[[a-zA-Z0-9_-]\{11\}\]\.' | grep -o '[a-zA-Z0-9_-]\{11\}' | "$scriptdir/fromfaV.sh"
 else
+	echo ===m3ucheck===
+	"$scriptdir/m3ucheck.sh"
 	echo ===archivecheck===
 	"$scriptdir/archivecheck.sh"
 	echo ===archivecheckstrict===
