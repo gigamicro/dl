@@ -3,11 +3,11 @@ scriptdir="$(dirname "$0")"
 basedir="$(cat "$scriptdir/basedir")"
 mkdir "$basedir" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
-# shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 
 [ -x "$scriptdir/square.sh" ] || { echo err: square.sh missing; exit 1; }
 # [ -d "$scriptdir/ignore" ] || echo no ignores
 
+# shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
   if [ -f "$listurl" ]; then
