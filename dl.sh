@@ -86,7 +86,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
     sed 's/^https:\/\/youtu.be\///' <"$listurl"
   else
     yt-dlp "$listurl" --flat-playlist --print id
-  fi) | while read -r id; do find -maxdepth 1 -name '*\['"$id].*" >> "./$name.m3u"; done
+  fi) | while read -r id; do find ./ -maxdepth 1 -name "*\[$id].*" >> "./$name.m3u"; done
 
   rm "$dir/$name.archive"
 
