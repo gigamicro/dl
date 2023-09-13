@@ -9,10 +9,10 @@ echo ===dl\&recentinlog===
 if [ "$1" = "z" ]; then
 	echo ===m3ucheck \| toarchive===
 	"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
-	echo ===archivecheck \| rm===
-	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
 	echo ===archivecheckstrict \| rm===
 	"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v
+	echo ===archivecheck \| rm===
+	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
 	echo ===archiveduplicatecheck \| rm===
 	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v
 	# echo '==find -type d -empty -delete=='
@@ -24,10 +24,10 @@ if [ "$1" = "z" ]; then
 else
 	echo ===m3ucheck===
 	"$scriptdir/m3ucheck.sh"
-	echo ===archivecheck===
-	"$scriptdir/archivecheck.sh"
 	echo ===archivecheckstrict===
 	"$scriptdir/archivecheckstrict.sh"
+	echo ===archivecheck===
+	"$scriptdir/archivecheck.sh"
 	echo ===archiveduplicatecheck===
 	"$scriptdir/archiveduplicatecheck.sh"
 	echo ===faVduplicatecheck===
