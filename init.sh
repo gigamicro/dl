@@ -15,8 +15,6 @@ if [ "$1" = "z" ]; then
 	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
 	echo ===archiveduplicatecheck \| rm===
 	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v
-	# echo '==find -type d -empty -delete=='
-	# find "$(cat "$scriptdir/archivedir")" -type d -empty -fprint /dev/stdout -delete
 	echo ===cull===
 	"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 	echo ===faVduplicatecheck \| fromfaV===
