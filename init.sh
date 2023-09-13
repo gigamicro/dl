@@ -2,8 +2,11 @@
 scriptdir="$(dirname "$0")"
 echo ===untrash===
 "$scriptdir/untrash.sh"
-echo ===toignore===
-"$scriptdir/toignore.sh" ~/Music/maybe\ remove.m3u
+echo ===fromplaylist\|grep archivedir=== #\|rm===
+"$scriptdir/fromplaylist.sh" ~/Music/maybe\ remove.m3u | grep -F "$(basename "$(cat "$scriptdir/archivedir")")/"
+echo ===fromplaylist\|toignore===
+"$scriptdir/fromplaylist.sh" ~/Music/maybe\ remove.m3u | "$scriptdir/toignore.sh"
+
 echo ===dl\&recentinlog===
 "$scriptdir/dl.sh" & "$scriptdir/recentinlog.sh" $!
 if [ "$1" = "z" ]; then
