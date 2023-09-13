@@ -21,7 +21,7 @@ if [ "$1" = "z" ]; then
 	echo ===cull===
 	"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 	echo ===faVduplicatecheck \| fromfaV===
-	"$scriptdir/faVduplicatecheck.sh" | grep -o ' \[[a-zA-Z0-9_-]\{11\}\]\.' | grep -o '[a-zA-Z0-9_-]\{11\}' | "$scriptdir/fromfaV.sh"
+	"$scriptdir/faVduplicatecheck.sh" | grep -o ' \[[a-zA-Z0-9_-]\{11\}\]\.' | cut -c 3-13 | "$scriptdir/fromfaV.sh"
 else
 	echo ===m3ucheck===
 	"$scriptdir/m3ucheck.sh"
