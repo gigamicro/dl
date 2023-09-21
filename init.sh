@@ -1,5 +1,7 @@
 #! /bin/sh
 scriptdir="$(dirname "$0")"
+if [ -e /tmp/dl.lock ]; then echo '/tmp/dl.lock exists'; return 1; fi
+touch /tmp/dl.lock
 echo ===untrash===
 "$scriptdir/untrash.sh"
 echo ===fromplaylist\|grep archivedir=== #\|rm===
@@ -34,3 +36,4 @@ else
 	echo ===faVduplicatecheck===
 	"$scriptdir/faVduplicatecheck.sh"
 fi
+rm -v /tmp/dl.lock
