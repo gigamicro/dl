@@ -26,6 +26,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
       s/^Videos$//;
       s/^Uploads.*$//;
       s/^awfuless presents$//;
+      s/.*'\''s Music$//;
       ')"
     if [ -z "$name" ]; then
       echo 'getting channel'
