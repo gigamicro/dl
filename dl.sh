@@ -8,6 +8,7 @@ mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 # [ -d "$scriptdir/ignore" ] || echo no ignores
 
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
+for listing in "playlists" "artists" "albums"; do
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
   if [ -f "$listurl" ]; then
@@ -93,7 +94,8 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
   ) >"/tmp/dl/log/${listurl##*/}.log" 2>&1 &
-done < "$scriptdir/playlists.m3u"
+done < "$scriptdir/$listing.m3u"
+done
 # date +"complete at %FT%T"
 echo "sure thing boss ($$)"
 wait
