@@ -24,6 +24,8 @@ if [ "$1" = "z" ]; then
 	"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 	echo ===faVduplicatecheck \| fromfaV===
 	"$scriptdir/faVduplicatecheck.sh" | grep -o ' \[[a-zA-Z0-9_-]\{11\}\]\.' | cut -c 3-13 | "$scriptdir/fromfaV.sh"
+	echo ===covercheck\(missing\) \| toarchive===
+	"$scriptdir/covercheck.sh" | grep '^missing' | cut -c 12- | "$scriptdir/toarchive.sh"
 else
 	echo ===m3ucheck===
 	"$scriptdir/m3ucheck.sh"
@@ -35,5 +37,7 @@ else
 	"$scriptdir/archiveduplicatecheck.sh"
 	echo ===faVduplicatecheck===
 	"$scriptdir/faVduplicatecheck.sh"
+	echo ===covercheck===
+	"$scriptdir/covercheck.sh"
 fi
 rm -v /tmp/dl.lock

@@ -1,11 +1,11 @@
 #!/bin/sh
 find "$(cat "$(dirname "$0")/basedir")" -name '*.m4a' ! -empty | while read -r i; do (
   if ffprobe "$i" 2>&1 | grep -q \(attached\ pic\); then
-    if   [ -f "$(dirname "$i")/cover.png" ]; then
+    if [ -n "$(find "$(dirname "$i")" -name 'cover.*' | head -c 6)" ]; then
       echo "redundant: $i"
     fi
   else
-    if ! [ -f "$(dirname "$i")/cover.png" ]; then
+    if [ -z "$(find "$(dirname "$i")" -name 'cover.*' | head -c 6)" ]; then
       echo "missing  : $i"
     fi
   fi
