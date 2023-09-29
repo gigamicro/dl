@@ -11,33 +11,50 @@ mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 for listing in "playlists" "artists" "albums"; do
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
+  case $listing in
+    playlists|artists) coverflag=y ;;
+    albums) coverflag=n ;;
+    *) echo "big error, unrecognised \$listing";;
+  esac
   if [ -f "$listurl" ]; then
-    name="$(echo "$listurl" | sed 's/^.*\///; s/\..*$//')"
-    coverflag=y && echo "Singlet covers - file playlist"
+    name="$(basename -s .m3u "$listurl")"
+    echo "file playlist"
   else
-    # echo "album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | sed 's/^........//')" &
-    name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
-      sed '
-      s/^Album - //;
-      s/ *(.*)$//;
-      s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;
-      s/ *-.*$//;
-      s/^NA$//;
-      s/^Songs$//;
-      s/^Videos$//;
-      s/^Uploads.*$//;
-      s/^awfuless presents$//;
-      s/.*'\''s Music$//;
-      ')"
-    if [ -z "$name" ]; then
-      echo 'getting channel'
-      coverflag=y; echo "Singlet covers"
+    case $listing in
+    # playlists)
+    #   echo 'playlist'
+    #   name="$(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
+    #   ;;
+    artists)
+      echo 'artist'
       name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
         s/ - Topic$//;
         s/\W*official channel\W*$//i;
         ')"
-    fi
-    [ "$name" = 'ENA' ] && coverflag=y && echo "Singlet covers - special case"
+      ;;
+    playlists|albums)
+      echo $listing | sed 's/\s$//'
+      name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
+        sed '
+        s/^Album - //;
+        s/ *(.*)$//;
+        s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;
+        s/ *-.*$//;
+        ')"
+      echo "name: $name, album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
+      ;;
+    # albums)
+    #   echo 'album'
+    #   name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
+    #     sed '
+    #     s/^Album - //;
+    #     s/ *(.*)$//;
+    #     s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;
+    #     s/ *-.*$//;
+    #     ')"
+    #   ;;
+    *) echo "big error, unrecognised \$listing";;
+    esac
   fi
   [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
   dir="$basedir/$name"
