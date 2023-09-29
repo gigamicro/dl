@@ -71,7 +71,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   #--playlist-random -i \
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
   if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag unset)"
-  elif [ -f "$dir/cover.png" ]; then echo "No downloaded cover (cover exists)"
+  elif [ -n "$(find "$(dirname "$i")" -name 'cover.*' | head -c 6)" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
   else
     echo "Auto cover"
