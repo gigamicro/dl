@@ -92,15 +92,13 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   #--playlist-random -i \
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
   if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag unset)"
-  elif [ -n "$(find "$(dirname "$i")" -name 'cover.*' | head -c 6)" ]; then echo "No downloaded cover (cover exists)"
+  elif [ -n "$(find . -name 'cover.*' | head -c 6)" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
   else
     echo "Auto cover"
-    yt-dlp "$listurl" \
-    --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
-    ffmpeg -i cover.* cover.png
-    sh "$scriptdir/square.sh" "cover.png"
-    # echo "No downloaded cover "
+    find . -name 'cover.*' -print0 | xargs -0 -n 1 rm -v
+    yt-dlp "$listurl" --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
+    find . -name 'cover.*' -print0 | xargs -0 -n 1 "$scriptdir/square.sh"
   fi
 
   echo "Writing playlist"
