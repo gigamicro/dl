@@ -18,6 +18,8 @@ if [ "$1" = "z" ]; then
 	"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v
 	echo ===archivecheck \| rm===
 	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
+	echo ===archivecheckloose \| rm===
+	"$scriptdir/archivecheckloose.sh" | xargs -rd \\n rm -v
 	echo ===archiveduplicatecheck \| rm===
 	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v
 	echo ===cull===
@@ -33,6 +35,8 @@ else
 	"$scriptdir/archivecheckstrict.sh"
 	echo ===archivecheck===
 	"$scriptdir/archivecheck.sh"
+	echo ===archivecheckloose===
+	"$scriptdir/archivecheckloose.sh"
 	echo ===archiveduplicatecheck===
 	"$scriptdir/archiveduplicatecheck.sh"
 	echo ===faVduplicatecheck===
