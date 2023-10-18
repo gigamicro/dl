@@ -2,6 +2,7 @@
 scriptdir="$(dirname "$0")"
 basedir="$(cat "$scriptdir/basedir")"
 mkdir "$basedir" 2> /dev/null
+rm -r "/tmp/dl/log" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 
 [ -x "$scriptdir/square.sh" ] || { echo err: square.sh missing; exit 1; }
@@ -33,7 +34,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
         ')"
       ;;
     playlists|albums)
-      echo $listing | sed 's/\s$//'
+      echo $listing | sed 's/s$//'
       name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
         sed '
         s/^Album - //;
