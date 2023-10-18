@@ -8,6 +8,7 @@ echo ===fromplaylist\|grep archivedir=== #\|rm===
 "$scriptdir/fromplaylist.sh" ~/Music/maybe\ remove.m3u | grep -F "$(basename "$(cat "$scriptdir/archivedir")")/"
 echo ===fromplaylist\|toignore===
 "$scriptdir/fromplaylist.sh" ~/Music/maybe\ remove.m3u | "$scriptdir/toignore.sh"
+mv -vfT ~/Music/maybe\ remove.m3u ~/Music/maybe\ remove~.m3u
 
 echo ===dl\&recentinlog===
 "$scriptdir/dl.sh" & "$scriptdir/recentinlog.sh" $!
