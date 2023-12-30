@@ -11,9 +11,9 @@ while read -r i; do
 		tr '[:upper:]' '[:lower:]' | sort | uniq -u | wc -l #tee /dev/fd/2 | wc -l
 	)" ] || \
 	#&& echo "$i" #\
-		# tail -n +2
+	# tail -n +2
 	find "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
 		-type f -name "${i#*/}[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" #| \
-		# mpv --force-window --playlist=-
-		# cat;echo
-		 done #2>&1 | uniq
+	# mpv --force-window --playlist=-
+	# cat;echo
+ done #2>&1 | uniq
