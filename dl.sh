@@ -59,7 +59,11 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
     *) echo "big error, unrecognised \$listing";;
     esac
   fi
-  [ -z "$name" -o "$name" = 'NA' ] && echo 'invalid playlist name' && exit
+  [ -z "$name" -o "$name" = 'NA' ] && {
+    echo 'invalid playlist name'
+    ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/${listurl##*/}.log"
+    exit
+  }
   dir="$basedir/$name"
   echo "$listurl -> $dir."
   ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/$name.log"
