@@ -10,6 +10,7 @@ mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 for listing in "playlists" "artists" "albums"; do
+grep -v '^[;#]' "$scriptdir/$listing.m3u" | \
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   yt-dlp --version || echo "$PATH"
   case $listing in
@@ -119,7 +120,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
   ) >"/tmp/dl/log/${listurl##*/}.log" 2>&1 &
-done < "$scriptdir/$listing.m3u"
+done
 done
 # date +"complete at %FT%T"
 echo "sure thing boss ($$)"
