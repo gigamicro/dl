@@ -31,6 +31,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
       name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
         s/ - Topic$//;
         s/\W*official channel\W*$//i;
+        ss/s⧸s;
         ')"
       ;;
     playlists|albums)
@@ -41,6 +42,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
         s/ *(.*)$//;
         s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;
         s/ *-.*$//;
+        ss/s⧸s;
         ')"
       echo "name: $name, album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
       ;;
