@@ -1,18 +1,25 @@
 #!/bin/sh
 {
-find "$(cat "$(dirname "$0")/archivedir")" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | sort | uniq
-find "$(cat "$(dirname "$0")/basedir")"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | sed 's/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//'  | sort | uniq
+find "$(cat "$(dirname "$0")/archivedir")" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
+ sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | tr '[:lower:]' '[:upper:]' | sort | uniq
+find "$(cat "$(dirname "$0")/basedir")"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
+ sed 's/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//'  | tr '[:lower:]' '[:upper:]' | sort | uniq
 } | sort | uniq -d | \
 while read -r i; do
 	# printf "%s\n" "$i" >/dev/fd/2
 	{
 	# [ "${i%/*}" = "Epic Mountain" ] || \
 	# [ "${i%/*}" = "Mad Rat Dead" ] || \
+	# [ "${i%/*}" = "MAD RAT DEAD" ] || \
 	# [ "$i" = "Vertigoaway/MarketingResearch" ] || \
 	[ "$(
-		find "$(cat "$(dirname "$0")/basedir")/${i%/*}" "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
-		-type f -name "${i#*/}[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
-		# tee /dev/fd/2 | \
+		# find "$(cat "$(dirname "$0")/basedir")/${i%/*}" "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
+		find \
+		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "$(printf '%q' "${i%/*}")")" \
+		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(printf '%q' "${i%/*}")")" \
+		-type f -iname "$(printf '%q' "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
+		{ echo "$i" >/dev/fd/2; cat; } | \
+		# { tee /dev/fd/2; } | \
 		xargs -d \\n -n 1 ffprobe -loglevel error -show_entries \
 		'stream_tags=comment,description,synopsis,artist,title,album : stream=duration
 		:format_tags=comment,description,synopsis,artist,title,album : format=duration' | \
@@ -26,11 +33,12 @@ while read -r i; do
 		-e ':synopsis=cover (front)'  \
 		-e ':album='  \
 		|\
+		# -e ':artist=bignatesdad' -e ':artist=mad vinnie dead' \
 		# -e '℗ armada springs' -e ':synopsis=provided to youtube by distrokid' \
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
 		sort | uniq -u | tee /dev/fd/2 | wc -l
 	)" -eq 0 ] || { printf "%s\n\n" "$i" >/dev/fd/2 ;false;}; } && \
-	find "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
-		-type f -name "${i#*/}[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
+	find "$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(printf '%q' "${i%/*}")")" \
+		-type f -iname "$(printf '%q' "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
 	# echo>/dev/fd/2
- done #2>/dev/null
+done #>/dev/null #2>/dev/null
