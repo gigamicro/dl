@@ -1,4 +1,5 @@
 #!/bin/sh
+unpattern(){ printf %s "$1" | sed 's/\\/\\\\/g;s/\*/\\*/g;s/\?/\\?/g;s/\!/\\!/g;s/\[/\\[/g';}
 {
 find "$(cat "$(dirname "$0")/archivedir")" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
  sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | tr '[:lower:]' '[:upper:]' | sort | uniq
@@ -15,9 +16,9 @@ while read -r i; do
 	[ "$(
 		# find "$(cat "$(dirname "$0")/basedir")/${i%/*}" "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
 		find \
-		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "$(printf '%q' "${i%/*}")")" \
-		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(printf '%q' "${i%/*}")")" \
-		-type f -iname "$(printf '%q' "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
+		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "$(unpattern "${i%/*}")")" \
+		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
+		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
 		{ echo "$i" >/dev/fd/2; cat; } | \
 		# { tee /dev/fd/2; } | \
 		xargs -d \\n -n 1 ffprobe -loglevel error -show_entries \
@@ -38,7 +39,7 @@ while read -r i; do
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
 		sort | uniq -u | tee /dev/fd/2 | wc -l
 	)" -eq 0 ] || { printf "%s\n\n" "$i" >/dev/fd/2 ;false;}; } && \
-	find "$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(printf '%q' "${i%/*}")")" \
-		-type f -iname "$(printf '%q' "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
+	find "$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
+		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
 	# echo>/dev/fd/2
 done #>/dev/null #2>/dev/null
