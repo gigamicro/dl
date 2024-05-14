@@ -13,6 +13,7 @@ while read -r i; do
 	# [ "${i%/*}" = "Mad Rat Dead" ] || \
 	# [ "${i%/*}" = "MAD RAT DEAD" ] || \
 	# [ "$i" = "Vertigoaway/MarketingResearch" ] || \
+	# [ "${i%/*}" = "OVERWERK" ] || \
 	[ "$(
 		# find "$(cat "$(dirname "$0")/basedir")/${i%/*}" "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
 		find \
