@@ -44,6 +44,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
         s/ *(.*)$//;
         s/ *O[fficial riginal]*S[ound ]*T[rack]*//i;
         s/ *-.*$//;
+        s/:/∶/;
         ss/s⧸s;
         ')"
       echo "name: $name, album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
