@@ -78,8 +78,11 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   # find . -maxdepth 1 -name '*.temp*' -delete
 
   find . -maxdepth 1 ! -empty ! -iname '*.webp' ! -iname '*.png' ! -iname '*.part' ! -iname '*.jpg' ! -iname '*].temp.*' | \
-  sed 's/^.* \[\([0-9a-zA-Z_-]\{11\}\)\]\..*$/youtube \1/;  s/^.* \[\([0-9]\{10\}\)\]\..*$/soundcloud \1/' | \
-  grep -e '^youtube ' -e '^soundcloud ' > "$dir/$name.archive"
+  sed '
+  s/^.* \[\([0-9a-zA-Z_-]\{11\}\)\]\..*$/youtube \1\n&/;
+  s/^.* \[\([0-9]\{10\}\)\]\..*$/soundcloud \1\n&/;
+  s/^.* \[\([0-9]*\)\]\..*$/bandcamp \1\n&/;
+  ' | grep -ve '^\.' > "$dir/$name.archive"
 
   if [ -d "$scriptdir/ignore" ]; then
     cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
