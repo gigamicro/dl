@@ -12,7 +12,9 @@ sed 'ss^\[download] Downloading item \([0-9]*\) of s\1/s;   ss^==> .*/s==> s;  s
 while read -r i; do
 	case $i in
 	'==> '*' <==') echo "$i" | head -c -5 |tail -c +5 >/tmp/$$.currentsource ;;
+	*'This video contains content from '*', who has blocked it on copyright grounds'*) echo ': Video copystruck' | cat /tmp/$$.currentsource - ;;
 	*'Video unavailable'*) echo ': Video unavailable' | cat /tmp/$$.currentsource - ;;
+	*'This video is not available'*) echo ': Video not available' | cat /tmp/$$.currentsource - ;;
 	*'only available to Music Premium'*) echo ': Premium video' | cat /tmp/$$.currentsource - ;;
 	'ERROR: '*) echo ": $i" | cat /tmp/$$.currentsource - ;;
 	*/*) echo ": $i" | cat /tmp/$$.currentsource - ;;
