@@ -7,9 +7,8 @@ sleep 6
 while [ "$(printf '%s\n' /tmp/dl/link/* | wc -l)" -lt "$(printf '%s\n' /tmp/dl/log/* | wc -l)" ]; do printf '.'; sleep 6; done; echo
 echo "Following $1 ($(printf '%s\n' /tmp/dl/link/* | wc -l) files)"
 tail "${1+--pid=$1}" -n +1 -f /tmp/dl/link/* 2>&1 | \
-grep -e '^\[download] Downloading item [0-9]* of [0-9]*$' -e '^ERROR: ' -e '^==> .* <==' | \
-# grep -v -e 'not available' -e 'only available' | \
-sed 's/^\[download] Downloading item //; ss of s/s; ss^==> .*/s==> s; ss.log <==$s <==s' | \
+grep -a -e '^\[download] Downloading item [0-9]* of [0-9]*$' -e '^ERROR: ' -e '^==> .* <==' | \
+sed 'ss^\[download] Downloading item \([0-9]*\) of s\1/s;   ss^==> .*/s==> s;  ss.log <==$s <==s' | \
 while read -r i; do
 	case $i in
 	'==> '*' <==') echo "$i" | head -c -5 |tail -c +5 >/tmp/$$.currentsource ;;
