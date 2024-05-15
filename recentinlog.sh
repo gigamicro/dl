@@ -4,8 +4,8 @@
 # sed 's/[^/]*\///g; s/\.log:/:/; s/: Downloading webpage$//'
 # -B 2 -A 6
 sleep 6
-while [ "$(find /tmp/dl/link/* | wc -l)" -lt "$(find /tmp/dl/log/* | wc -l)" ]; do printf '.'; sleep 6; done; echo
-echo "Following $1 ($(find /tmp/dl/link/* | wc -l) files)"
+while [ "$(printf '%s\n' /tmp/dl/link/* | wc -l)" -lt "$(printf '%s\n' /tmp/dl/log/* | wc -l)" ]; do printf '.'; sleep 6; done; echo
+echo "Following $1 ($(printf '%s\n' /tmp/dl/link/* | wc -l) files)"
 tail "${1+--pid=$1}" -n +1 -f /tmp/dl/link/* 2>&1 | \
 grep -e '^\[download] Downloading item [0-9]* of [0-9]*$' -e '^ERROR: ' -e '^==> .* <==' | \
 # grep -v -e 'not available' -e 'only available' | \
