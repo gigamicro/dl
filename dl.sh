@@ -40,7 +40,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
       name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
         sed '
         s/^Album - //;
-        s/[- (]*[Vv][Oo][Ll][UuMmEe.]* / vol. /;
+        s/[- (]*Vol[ume.]* / vol. /i;
         s/ *(.*)$//;
         s/ *O[fficial riginal]*S[ound ]*T[rack]*//i;
         s/ *-.*$//;
