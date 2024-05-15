@@ -41,9 +41,10 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
         sed '
         s/^Album - //;
         s/[- (]*Vol[ume.]* / vol. /i;
-        s/ *(.*)$//;
-        s/ *O[fficial riginal]*S[ound ]*T[rack]*//i;
+        s/ *([^(]*)$//;
+        s/ *\[[^[]*]$//;
         s/ *-.*$//;
+        s/ *O[fficial riginal Game]*S[ound ]*T[rack]*//i;
         s/:/∶/;
         ss/s⧸s;
         ')"
