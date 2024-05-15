@@ -126,9 +126,16 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
   ) >"/tmp/dl/log/${listurl##*/}.log" 2>&1 &
+printf '%s\n' "$!" >> /tmp/dl.wait.pids
 done
 done
 # date +"complete at %FT%T"
 echo "sure thing boss ($$)"
-wait
+wait # (doesn't)
+while read i; do
+  while kill -0 "$i" 2>&-; do
+    sleep 6
+  done
+done </tmp/dl.wait.pids
+rm /tmp/dl.wait.pids
 echo "done boss"
