@@ -1,10 +1,9 @@
 #!/bin/sh
-# grep '^\[youtube\] [a-zA-Z0-9_-]\{11\}: Downloading webpage$' /tmp/dl/link/* | \
-# sed -e 's/^.*\/\([^/]*\).log:\[youtube\] \([a-zA-Z0-9_-]\{11\}\): Downloading webpage$/https:\/\/youtu.be\/\2 | \1/' -e 's/^https:\/\/youtu.be\///'
-# sed 's/[^/]*\///g; s/\.log:/:/; s/: Downloading webpage$//'
-# -B 2 -A 6
 sleep 6
-while [ "$(printf '%s\n' /tmp/dl/link/* | wc -l)" -lt "$(printf '%s\n' /tmp/dl/log/* | wc -l)" ]; do printf '.'; sleep 6; done; echo
+while [ "$(printf '%s\n' /tmp/dl/link/* | wc -l)" -lt "$(printf '%s\n' /tmp/dl/log/* | wc -l)" ]; do
+	printf '%s\r' "$(printf '%s\n' /tmp/dl/link/* | wc -l)/$(printf '%s\n' /tmp/dl/log/* | wc -l)"
+	sleep 6
+done
 echo "Following $1 ($(printf '%s\n' /tmp/dl/link/* | wc -l) files)"
 tail "${1+--pid=$1}" -n +1 -f /tmp/dl/link/* 2>&1 | \
 grep -a -e '^\[download] Downloading item [0-9]* of [0-9]*$' -e '^ERROR: ' -e '^==> .* <==' | \
