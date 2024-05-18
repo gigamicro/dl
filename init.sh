@@ -45,4 +45,9 @@ else
 	echo ===covercheck===
 	"$scriptdir/covercheck.sh"
 fi
+echo ===crossdupecheck===
+"$scriptdir/crossdupecheck.sh"
+echo ===duplicatecheck===
+"$scriptdir/duplicatecheck.sh"
+
 rm -v /tmp/dl.lock
