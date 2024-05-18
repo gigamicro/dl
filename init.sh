@@ -2,6 +2,7 @@
 scriptdir="$(dirname "$0")"
 if [ -e /tmp/dl.lock ]; then echo '/tmp/dl.lock exists'; return 1; fi
 touch /tmp/dl.lock
+timestamp="$(date +%s)"
 echo ===untrash===
 "$scriptdir/untrash.sh"
 echo ===fromplaylist\|grep archivedir=== #\|rm===
@@ -45,6 +46,8 @@ else
 	echo ===covercheck===
 	"$scriptdir/covercheck.sh"
 fi
+echo ===untouchedcheck===
+"$scriptdir/untouchedcheck.sh" "$timestamp"
 echo ===crossdupecheck===
 "$scriptdir/crossdupecheck.sh"
 echo ===duplicatecheck===
