@@ -20,7 +20,7 @@ while read -r i; do
 		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "$(unpattern "${i%/*}")")" \
 		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
 		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
-		{ echo "$i" >/dev/fd/2; cat; } | \
+		{ echo "$i" >>/dev/fd/2; cat; } | \
 		# { tee /dev/fd/2; } | \
 		xargs -d \\n -n 1 ffprobe -loglevel error -show_entries \
 		'stream_tags=comment,description,synopsis,artist,title,album : stream=duration
@@ -38,7 +38,7 @@ while read -r i; do
 		# -e ':artist=bignatesdad' -e ':artist=mad vinnie dead' \
 		# -e '℗ armada springs' -e ':synopsis=provided to youtube by distrokid' \
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
-		sort | uniq -u | tee /dev/fd/2 | wc -l
+		sort | uniq -u | tee -a /dev/fd/2 | wc -l
 	)" -eq 0 ] || { printf "%s\n\n" "$i" >/dev/fd/2 ;false;}; } && \
 	find "$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
 		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
