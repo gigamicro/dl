@@ -21,7 +21,7 @@ if [ "$1" = "z" ]; then
 	echo ===archivecheck \| rm===
 	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
 	echo ===archivecheckloose \| rm===
-	"$scriptdir/archivecheckloose.sh" | { tee /dev/fd/2 >>"$scriptdir/archivecheckloose.log"; } 2>&1 | xargs -rd \\n rm -v
+	"$scriptdir/archivecheckloose.sh" | { tee -a /dev/fd/2 >>"$scriptdir/archivecheckloose.log"; } 2>&1 | xargs -rd \\n rm -v
 	echo ===archiveduplicatecheck \| rm===
 	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v
 	echo ===cull===

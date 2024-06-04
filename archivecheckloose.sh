@@ -7,7 +7,7 @@ find "$(cat "$(dirname "$0")/basedir")"    -type f | grep   '\[[a-zA-Z0-9_-]\{11
  sed 's/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//'  | tr '[:lower:]' '[:upper:]' | sort | uniq
 } | sort | uniq -d | \
 while read -r i; do
-	# printf "%s\n" "$i" >/dev/fd/2
+	# printf "%s\n" "$i" >>/dev/fd/2
 	{
 	# [ "${i%/*}" = "Epic Mountain" ] || \
 	# [ "${i%/*}" = "Mad Rat Dead" ] || \
@@ -21,7 +21,7 @@ while read -r i; do
 		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
 		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
 		{ echo "$i" >>/dev/fd/2; cat; } | \
-		# { tee /dev/fd/2; } | \
+		# { tee -a /dev/fd/2; } | \
 		xargs -d \\n -n 1 ffprobe -loglevel error -show_entries \
 		'stream_tags=comment,description,synopsis,artist,title,album : stream=duration
 		:format_tags=comment,description,synopsis,artist,title,album : format=duration' | \
@@ -39,8 +39,8 @@ while read -r i; do
 		# -e '℗ armada springs' -e ':synopsis=provided to youtube by distrokid' \
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
 		sort | uniq -u | tee -a /dev/fd/2 | wc -l
-	)" -eq 0 ] || { printf "%s\n\n" "$i" >/dev/fd/2 ;false;}; } && \
+	)" -eq 0 ] || { printf "%s\n\n" "$i" >>/dev/fd/2 ;false;}; } && \
 	find "$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
 		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
-	# echo>/dev/fd/2
+	# echo>>/dev/fd/2
 done #>/dev/null #2>/dev/null
