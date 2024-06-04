@@ -39,8 +39,6 @@
 
 `fromfaV.sh`: comments lines from `faV.m3u` ending in lines from stdin; removes downloads with matching video IDs from `basedir`/faV/
 
-`fromplaylist.sh`: greps for lines that look like downloads from $1
-
 `ignore/`: contains yt-dlp `.archive`-format lists of videos to ignore, per playlist
 
 `init.sh`: uses the other scripts; `init.sh z` to enable changes other than `dl.sh` and more minor cleanups
