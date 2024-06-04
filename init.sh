@@ -20,13 +20,13 @@ if [ "$1" = "z" ]; then
 	echo ===m3ucheck \| toarchive===
 	"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
 	echo ===archivecheckstrict \| rm===
-	"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v
+	"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v --
 	echo ===archivecheck \| rm===
-	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v
+	"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v --
 	echo ===archivecheckloose \| rm===
-	"$scriptdir/archivecheckloose.sh" | { tee -a /dev/fd/2 >>"$scriptdir/archivecheckloose.log"; } 2>&1 | xargs -rd \\n rm -v
+	"$scriptdir/archivecheckloose.sh" | { tee -a /dev/fd/2 >>"$scriptdir/archivecheckloose.log"; } 2>&1 | xargs -rd \\n rm -v --
 	echo ===archiveduplicatecheck \| rm===
-	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v
+	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v --
 	echo ===cull===
 	"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 	echo ===faVduplicatecheck \| fromfaV===
