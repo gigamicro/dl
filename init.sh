@@ -5,11 +5,13 @@ touch /tmp/dl.lock
 timestamp="$(date +%s)"
 echo ===untrash===
 "$scriptdir/untrash.sh"
+if [ -f ~/Music/maybe\ remove.m3u ]; then
 echo ===fromplaylist\|grep archivedir=== #\|rm===
 grep -v '^#' ~/Music/maybe\ remove.m3u | grep -F "$(basename "$(cat "$scriptdir/archivedir")")/" | xargs -rd \\n printf '%s\n' rm -v
 echo ===fromplaylist\|toignore===
 grep -v '^#' ~/Music/maybe\ remove.m3u | "$scriptdir/toignore.sh"
 cat ~/Music/maybe\ remove.m3u 2>&1 1>> ~/Music/maybe\ remove~.m3u && rm ~/Music/maybe\ remove.m3u
+fi
 
 echo ===dl\&recentinlog===
 "$scriptdir/dl.sh" & "$scriptdir/recentinlog.sh" $!
