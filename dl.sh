@@ -6,6 +6,7 @@ rm -r "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 
 [ -x "$scriptdir/square.sh" ] || { echo err: square.sh missing; exit 1; }
+[ -x "$scriptdir/nametoignores.sh" ] || { echo err: nametoignores.sh missing; exit 1; }
 # [ -d "$scriptdir/ignore" ] || echo no ignores
 
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
@@ -78,11 +79,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   # find . -maxdepth 1 -name '*.temp*' -delete
 
   find . -maxdepth 1 ! -empty ! -iname '*.webp' ! -iname '*.png' ! -iname '*.part' ! -iname '*.jpg' ! -iname '*].temp.*' | \
-  sed '
-  s/^.* \[\([0-9a-zA-Z_-]\{11\}\)\]\..*$/youtube \1\n&/;
-  s/^.* \[\([0-9]\{10\}\)\]\..*$/soundcloud \1\n&/;
-  s/^.* \[\([0-9]*\)\]\..*$/bandcamp \1\n&/;
-  ' | grep -ve '^\.' > "$dir/$name.archive"
+  "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
 
   if [ -d "$scriptdir/ignore" ]; then
     cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
