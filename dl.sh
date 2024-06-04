@@ -1,10 +1,10 @@
 #!/bin/sh
-scriptdir="$(dirname "$0")"
+scriptdir="$(dirname "$0" | xargs -0 readlink -f)" # canonicalize because there is a cd later
 basedir="$(cat "$scriptdir/basedir")"
 mkdir "$basedir" 2> /dev/null
 rm -r "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
-
+cd "/tmp/dl" # test canonicalization
 [ -x "$scriptdir/square.sh" ] || { echo err: square.sh missing; exit 1; }
 [ -x "$scriptdir/nametoignores.sh" ] || { echo err: nametoignores.sh missing; exit 1; }
 # [ -d "$scriptdir/ignore" ] || echo no ignores
