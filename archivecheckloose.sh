@@ -19,7 +19,7 @@ while read -r i; do
 		find \
 		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "$(unpattern "${i%/*}")")" \
 		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
-		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*" | \
+		-type f \( -iname "$(unpattern "${i#*/}") \[*].*" -o -iname "$(unpattern "${i#*/}")-???????????.*" \) | \
 		{ echo "$i" >>/dev/fd/2; cat; } | \
 		# { tee -a /dev/fd/2; } | \
 		xargs -d \\n -n 1 ffprobe -loglevel error -show_entries \
