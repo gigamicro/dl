@@ -1,5 +1,6 @@
 #! /bin/sh
 scriptdir="$(dirname "$0")"
+exec 2>&1
 if [ -e /tmp/dl.lock ]; then echo '/tmp/dl.lock exists'; return 1; fi
 touch /tmp/dl.lock
 timestamp="$(date +%s)"

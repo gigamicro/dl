@@ -1,13 +1,14 @@
 #!/bin/sh
 scriptdir="$(dirname "$0" | xargs -0 readlink -f)" # canonicalize because there is a cd later
 basedir="$(cat "$scriptdir/basedir")"
+rm -v /tmp/dl.wait.pids 2> /dev/null
 mkdir "$basedir" 2> /dev/null
 rm -r "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 cd "/tmp/dl" # test canonicalization
 [ -x "$scriptdir/square.sh" ] || { echo err: square.sh missing; exit 1; }
 [ -x "$scriptdir/nametoignores.sh" ] || { echo err: nametoignores.sh missing; exit 1; }
-# [ -d "$scriptdir/ignore" ] || echo no ignores
+[ -d "$scriptdir/ignore" ] || echo no ignores
 
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 for listing in "playlists" "artists" "albums"; do
@@ -77,8 +78,9 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   # rm -v ./*.mp4 ./*.webp ./*].png ./*.part ./*.jpg ./*.temp.* 2> /dev/null && echo "Deleted remains"
   # find . -maxdepth 1 -name '*.temp*' -delete
+  # find . -type f ! -name 'cover.*' -name '*.webp' -o -name '*.part' -delete
 
-  find . -maxdepth 1 ! -empty ! -iname '*.webp' ! -iname '*.png' ! -iname '*.part' ! -iname '*.jpg' ! -iname '*].temp.*' | \
+  find . -maxdepth 1 ! -empty ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.part' ! -iname '*].temp.*' | \
   "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
 
   if [ -d "$scriptdir/ignore" ]; then
@@ -87,21 +89,15 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   fi
 
   yt-dlp --embed-metadata --format 'ba*' -x \
-  $(if [ -f "$listurl" ]; then
-    echo --batch-file "$listurl"
-  else
-    echo "$listurl"
-  fi) \
+  $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" \
   --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
-  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *\" [%(id)s].webp\" || '$scriptdir/square.sh' *\" [%(id)s].jpg\"" \
-  $(if [ "$coverflag" != "y" ]; then
-    echo "--no-embed-thumbnail --no-exec --parse-metadata playlist_index:%(track_number)s "
-  fi)
+  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *' [%(id)s].webp' || '$scriptdir/square.sh' *' [%(id)s].jpg'" \
+  $( ! [ "$coverflag" = "y" ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s")
 
   #--playlist-random -i \
   # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
-  if [ ! "$coverflag" != "y" ]; then echo "No downloaded cover (coverflag unset)"
+  if [ "$coverflag" = "y" ]; then echo "No downloaded cover (coverflag unset)"
   elif [ -n "$(find . -name 'cover.*' | head -c 6)" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
   else
