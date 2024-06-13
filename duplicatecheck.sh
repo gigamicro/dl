@@ -1,4 +1,5 @@
 #!/bin/sh
-find "$(cat "$(dirname "$0")/basedir")" -type f | grep -o '\[[a-zA-Z0-9_-]\{11\}\]' | cut -c 2-12 | sort | uniq -d | \
-while read -r i; do find "$(cat "$(dirname "$0")/basedir")" -type f -name "*[[-]${i}[].]*" | xargs -d \\n dirname | uniq -d | sed 's/$/\t'"$i"'/'; done | \
-while read -r i; do find "${i%	*}" -type f -name "*[[-]${i##*	}[].]*"; done
+find "$(cat "$(dirname "$0")/basedir")" -type f | \
+sed 'ss[^/]* \[s\ts' | \
+sort | uniq -d | \
+while read -r i; do find "${i%	*}" -type f -name "* \[${i##*	}" | xargs -rd \\n stat -c '%Z %n' | sort -r | tail -n +2 | cut -c 12-; done

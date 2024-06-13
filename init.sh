@@ -25,6 +25,8 @@ echo ===dl\&recentinlog===
 if [ "$1" = "z" ]; then
 	echo ===m3ucheck \| toarchive===
 	"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
+	echo ===duplicatecheck \| toarchive===
+	"$scriptdir/duplicatecheck.sh" | "$scriptdir/toarchive.sh"
 	echo ===archivecheckstrict \| rm===
 	"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v --
 	echo ===archivecheck \| rm===
@@ -42,6 +44,8 @@ if [ "$1" = "z" ]; then
 else
 	echo ===m3ucheck===
 	"$scriptdir/m3ucheck.sh"
+	echo ===duplicatecheck===
+	"$scriptdir/duplicatecheck.sh"
 	echo ===archivecheckstrict===
 	"$scriptdir/archivecheckstrict.sh"
 	echo ===archivecheck===
@@ -59,7 +63,5 @@ echo ===untouchedcheck===
 "$scriptdir/untouchedcheck.sh" "$timestamp"
 echo ===crossdupecheck===
 "$scriptdir/crossdupecheck.sh"
-echo ===duplicatecheck===
-"$scriptdir/duplicatecheck.sh"
 
 rm -v /tmp/dl.lock
