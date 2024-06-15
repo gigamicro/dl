@@ -37,7 +37,7 @@ if [ "$1" = "z" ]; then
 	echo ===archiveduplicatecheck \| rm===
 	"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v --
 	echo ===faVduplicatecheck \| fromfaV===
-	"$scriptdir/faVduplicatecheck.sh" | grep -o ' \[[a-zA-Z0-9_-]\{11\}\]\.' | cut -c 3-13 | "$scriptdir/fromfaV.sh"
+	"$scriptdir/faVduplicatecheck.sh" | "$scriptdir/nametoignores.sh" | cut -d\  -f2- | "$scriptdir/fromfaV.sh"
 	echo ===covercheck\(missing\) \| toarchive===
 	"$scriptdir/covercheck.sh" | grep '^missing' | cut -c 12- | "$scriptdir/toarchive.sh"
 	echo ===squarecheck \| toarchive===

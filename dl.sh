@@ -1,8 +1,8 @@
 #!/bin/sh
-scriptdir="$(dirname "$0" | xargs -0 readlink -f)" # canonicalize because there is a cd later
+scriptdir="$(dirname -z "$0" | xargs -0 readlink -f)" # canonicalize because there is a cd later
 basedir="$(cat "$scriptdir/basedir")"
 rm -v /tmp/dl.wait.pids 2> /dev/null
-mkdir "$basedir" 2> /dev/null
+mkdir -v "$basedir" 2> /dev/null
 rm -r "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 cd "/tmp/dl" # test canonicalization
@@ -85,14 +85,14 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
 
   if [ -d "$scriptdir/ignore" ]; then
     cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
-    sed 's/youtube //; s/soundcloud //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
+    sed 's/^[a-z]* //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
   fi
 
   yt-dlp --embed-metadata --format 'ba*' -x \
   $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" \
   --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
-  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *' [%(id)s].webp' || '$scriptdir/square.sh' *' [%(id)s].jpg'" \
+  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *' [%(id)s].'*" \
   $( ! [ "$coverflag" = "y" ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s")
 
   #--playlist-random -i \
