@@ -61,6 +61,8 @@
 
 `square.sh`: Crops image $1 to square, centered, inplace; required for `dl.sh` covers
 
+`tailexisting.sh`: tail log of currently running pids in waitlist
+
 `toalbums.sh`: `tolists.sh` `albums.m3u`
 
 `toarchive.sh`: moves \*/\* (from stdin) to `archivedir`/\*/\*
