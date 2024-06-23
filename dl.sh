@@ -92,7 +92,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" \
   --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
-  --embed-thumbnail --exec before_dl:"'$scriptdir/square.sh' *' [%(id)s].'*" \
+  --embed-thumbnail --exec before_dl:"find . -name '"'* \[%(id)s].*'"' -print0 | xargs -0 -n 1 '$scriptdir/square.sh'" \
   $( ! [ "$coverflag" = "y" ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s")
 
   #--playlist-random -i \
