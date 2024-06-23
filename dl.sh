@@ -1,5 +1,5 @@
 #!/bin/sh
-scriptdir="$(dirname -z "$0" | xargs -0 readlink -f)" # canonicalize because there is a cd later
+scriptdir="$(readlink -f -z "$0" | xargs -0 dirname)" # canonicalize because there is a cd later
 basedir="$(cat "$scriptdir/basedir")"
 rm -v /tmp/dl.wait.pids 2> /dev/null
 mkdir -v "$basedir" 2> /dev/null
