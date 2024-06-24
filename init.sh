@@ -22,7 +22,7 @@ if [ -f ~/Music/maybe\ remove.m3u ]; then
 fi
 
 echo ===dl\&recentinlog===
-"$scriptdir/dl.sh" & "$scriptdir/recentinlog.sh" $!
+"$scriptdir/dl.sh" & sleep 6;"$scriptdir/recentinlog.sh" $!
 if [ "$1" = "z" ]; then
 	echo ===faVduplicatecheck \| fromfaV===; 		"$scriptdir/faVduplicatecheck.sh" | "$scriptdir/nametoignores.sh" | cut -d\  -f2- | "$scriptdir/fromfaV.sh"
 	echo ===archivecheckstrict \| rm===; 			"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v --
