@@ -82,10 +82,10 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
 
   find . -maxdepth 1 ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.part' ! -iname '* [*].temp.*' ! -empty | \
   "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
-
-  if [ -d "$scriptdir/ignore" ]; then
-    cat "$scriptdir/ignore/$name.archive" >> "$dir/$name.archive" 2>/dev/null && echo "Added ignore to archive"
-    sed 's/^[a-z]* //' < "$scriptdir/ignore/$name.archive" 2>/dev/null | while read -r id; do rm -v ./*"[$id]"* 2>/dev/null; done
+  if [ -f "$scriptdir/ignore/$name.archive" ]; then
+    echo "Applying ignore"
+    cat "$scriptdir/ignore/$name.archive" | tee -a "$dir/$name.archive" | \
+    grep -v '^;' | cut -d\  -f 2- | xargs -d \\n -i{} find . -name '* \[{}].*' -print0 | xargs -0 rm -v
   fi
 
   yt-dlp --embed-metadata --format 'ba*' -x \
