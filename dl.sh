@@ -13,16 +13,16 @@ cd "/tmp/dl" # test canonicalization
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 for listing in "playlists" "artists" "albums"; do
 grep -v '^[;#]' "$scriptdir/$listing.m3u" | \
-while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
-  yt-dlp --version || echo "$PATH"
+while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl/log/${listurl##*/}.log"; (
+  # yt-dlp --version || echo "$PATH"
   case $listing in
     playlists|artists) coverflag=y ;;
     albums) coverflag=n ;;
     *) echo "big error, unrecognised \$listing";;
   esac
   if [ -f "$listurl" ]; then
-    name="$(basename -s .m3u "$listurl")"
     echo "file playlist"
+    name="$(basename "$listurl" .m3u)"
   else
     case $listing in
     # playlists)
@@ -67,12 +67,12 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   fi
   if [ -z "$name" ]||[ "$name" = 'NA' ]; then
     echo 'invalid playlist name'
-    ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/${listurl##*/}.log"
+    ln -svrT "$logloc" "/tmp/dl/link/${listurl##*/}.log"
     exit
   fi
   dir="$basedir/$name"
   printf '%s -> %s.\n' "$listurl" "$dir"
-  ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/$name.log"
+  ln -svrT "$logloc" "/tmp/dl/link/$name.log"
   mkdir -v "$dir"
   cd "$dir" || exit
 
@@ -118,7 +118,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   rm "$dir/$name.archive"
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
-  ) >"/tmp/dl/log/${listurl##*/}.log" 2>&1 &
+  ) >"$logloc" 2>&1 &
 printf '%s\n' "$!" >> /tmp/dl.wait.pids
 done
 done
