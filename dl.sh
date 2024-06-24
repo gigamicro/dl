@@ -65,22 +65,22 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
     *) echo "big error, unrecognised \$listing";;
     esac
   fi
-  [ -z "$name" -o "$name" = 'NA' ] && {
+  if [ -z "$name" ]||[ "$name" = 'NA' ]; then
     echo 'invalid playlist name'
     ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/${listurl##*/}.log"
     exit
-  }
+  fi
   dir="$basedir/$name"
-  echo "$listurl -> $dir."
+  printf '%s -> %s.\n' "$listurl" "$dir"
   ln -svrT "/tmp/dl/log/${listurl##*/}.log" "/tmp/dl/link/$name.log"
-  mkdir -v "$dir" 2> /dev/null || echo "Directory exists"
+  mkdir -v "$dir"
   cd "$dir" || exit
 
   # rm -v ./*.mp4 ./*.webp ./*].png ./*.part ./*.jpg ./*.temp.* 2> /dev/null && echo "Deleted remains"
   # find . -maxdepth 1 -name '*.temp*' -delete
   # find . -type f ! -name 'cover.*' -name '*.webp' -o -name '*.part' -delete
 
-  find . -maxdepth 1 ! -empty ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.part' ! -iname '*].temp.*' | \
+  find . -maxdepth 1 ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.part' ! -iname '* [*].temp.*' ! -empty | \
   "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
 
   if [ -d "$scriptdir/ignore" ]; then
@@ -94,15 +94,15 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; (
   --concurrent-fragments 32 \
   --embed-thumbnail --exec before_dl:"find . -name '"'* \[%(id)s].*'"' -print0 | xargs -0 -n 1 '$scriptdir/square.sh'" \
   $( ! [ "$coverflag" = "y" ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s")
-
   #--playlist-random -i \
-  # --print-to-file '%(title)s [%(id)s].*' "$name.m3u" \
+  #--print-to-file filename "$name.m3u" \
+
   if [ "$coverflag" = "y" ]; then echo "No downloaded cover (coverflag unset)"
-  elif [ -n "$(find . -name 'cover.*' | head -c 6)" ]; then echo "No downloaded cover (cover exists)"
+  elif [ -n "$(find . -name 'cover.*' -quit)" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
   else
     echo "Auto cover"
-    find . -name 'cover.*' -print0 | xargs -0 -n 1 rm -v
+    find . -name 'cover.*' -print0 | xargs -0 rm -v
     yt-dlp "$listurl" --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
     find . -name 'cover.*' -print0 | xargs -0 -n 1 "$scriptdir/square.sh"
   fi
