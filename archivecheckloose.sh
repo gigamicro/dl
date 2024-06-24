@@ -1,13 +1,14 @@
 #!/bin/sh
-unpattern(){ printf %s "$1" | sed 's/\\/\\\\/g;s/\*/\\*/g;s/\?/\\?/g;s/\!/\\!/g;s/\[/\\[/g';}
+archivedir="$(cat "$(dirname "$0")/archivedir")"
+basedir="$(   cat "$(dirname "$0")/basedir")"
 {
-find "$(cat "$(dirname "$0")/archivedir")" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
+find "$archivedir" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
  sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | tr '[:lower:]' '[:upper:]' | sort | uniq
-find "$(cat "$(dirname "$0")/basedir")"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
+find "$basedir"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
  sed 's/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//'  | tr '[:lower:]' '[:upper:]' | sort | uniq
 } | sort | uniq -d | \
-while read -r i; do
-	# printf "%s\n" "$i" >>/dev/fd/2
+"$(dirname "$0")/unpattern.sh" | while read -r i; do
+	# printf "%s\n" "$i" >&2
 	{
 	# [ "${i%/*}" = "Epic Mountain" ] || \
 	# [ "${i%/*}" = "Mad Rat Dead" ] || \
@@ -15,12 +16,12 @@ while read -r i; do
 	# [ "$i" = "Vertigoaway/MarketingResearch" ] || \
 	# [ "${i%/*}" = "OVERWERK" ] || \
 	[ "$(
-		# find "$(cat "$(dirname "$0")/basedir")/${i%/*}" "$(cat "$(dirname "$0")/archivedir")/${i%/*}" \
+		# find "$(cat "$(dirname "$0")/basedir")/${i%/*}" "$archivedir/${i%/*}" \
 		find \
-		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "$(unpattern "${i%/*}")")" \
-		"$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
-		-type f \( -iname "$(unpattern "${i#*/}") \[*].*" -o -iname "$(unpattern "${i#*/}")-???????????.*" \) | \
-		{ echo "$i" >>/dev/fd/2; cat; } | \
+		"$(find "$(cat "$(dirname "$0")/basedir"   )/" -type d -iname "${i%/*}")" \
+		"$(find "$archivedir/" -type d -iname "${i%/*}")" \
+		-type f \( -iname "${i#*/} \[*].*" -o -iname "${i#*/}-???????????.*" \) | \
+		{ printf '%s\n' "$i" >&2; cat; } | \
 		# { tee -a /dev/fd/2; } | \
 		xargs -d \\n -n 1 ffprobe -loglevel error -show_entries \
 		'stream_tags=comment,description,synopsis,artist,title,album : stream=duration
@@ -39,8 +40,7 @@ while read -r i; do
 		# -e '℗ armada springs' -e ':synopsis=provided to youtube by distrokid' \
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
 		sort | uniq -u | tee -a /dev/fd/2 | wc -l
-	)" -eq 0 ] || { printf "%s\n\n" "$i" >>/dev/fd/2 ;false;}; } && \
-	find "$(find "$(cat "$(dirname "$0")/archivedir")/" -type d -iname "$(unpattern "${i%/*}")")" \
-		-type f -iname "$(unpattern "${i#*/}")[- ][[a-zA-Z0-9_-]??????????[.a-zA-Z0-9_-][]a-zA-Z0-9]*"
-	# echo>>/dev/fd/2
+	)" -eq 0 ] || { printf "%s\n\n" "$i" >&2 ;false;}; } && \
+	find "$archivedir/" -ipath "${i} \[*].*" -o -ipath "${i}-???????????.*"
+	# echo>&2
 done #>/dev/null #2>/dev/null

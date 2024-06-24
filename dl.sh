@@ -85,7 +85,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   if [ -f "$scriptdir/ignore/$name.archive" ]; then
     echo "Applying ignore"
     cat "$scriptdir/ignore/$name.archive" | tee -a "$dir/$name.archive" | \
-    grep -v '^;' | cut -d\  -f 2- | xargs -d \\n -i{} find . -name '* \[{}].*' -print0 | xargs -0 rm -v
+    grep -v '^;' | cut -d\  -f 2- | "$scriptdir/unpattern.sh" | xargs -d \\n -i{} find . -name '* \[{}].*' -print0 | xargs -0 rm -v
   fi
 
   yt-dlp --embed-metadata --format 'ba*' -x \
