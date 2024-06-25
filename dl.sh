@@ -36,6 +36,13 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
         s/\W*official channel\W*$//i;
         ss/s⧸s;
         ')"
+      if [ "$name" = "NA" ]; then
+        if [ "${listurl#*soundcloud.com}" != "$listurl" ]; then
+          name="${listurl#*soundcloud.com/}"
+          name="${name%%/*}"
+          listurl="${listurl%%soundcloud.com/*}soundcloud.com/$name/tracks"
+        fi
+      fi
       ;;
     playlists|albums)
       echo $listing | sed 's/s$//'
