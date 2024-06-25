@@ -4,7 +4,7 @@
 # done
 basedir="$(cat "$(dirname "$0")/basedir")"
 find "$basedir" -type f -name '*.m3u' ! -name 'faV.m3u' | while read -r i; do
-  cat "$basedir/faV/faV.m3u" "$i" | sort | uniq -d
+  cat "$basedir/faV/faV.m3u" "$i" | sort | uniq -d | grep -v '^$'
 done
 # -name '*.m4a'
 true

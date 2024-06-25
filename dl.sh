@@ -108,12 +108,11 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   fi
 
   echo "Writing playlist"
-  true > "./$name.m3u"
-  (if [ -f "$listurl" ]; then
-    sed 's/^https:\/\/youtu.be\///' <"$listurl"
-  else
-    yt-dlp "$listurl" --flat-playlist --print id
-  fi) | while read -r id; do find ./ -maxdepth 1 -name "*\[$id].*" >> "./$name.m3u"; done
+  yt-dlp $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" --flat-playlist --print id | \
+  "$scriptdir/unpattern.sh" | xargs -d \\n -i{} -t find ./ -name '* \[{}].*' -maxdepth 1 \
+  -print0 -nowarn 2>&1 | sed -z 's/[^\n]*\n\([^\n]*\)$/\1/; s/[^\n]*\n/\n/' | tr '\0' '\n' \
+  > "./$name.m3u"
+  # (complex line is to have newlines at nonexistent files)
 
   rm "$dir/$name.archive"
 
