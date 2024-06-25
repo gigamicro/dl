@@ -5,8 +5,6 @@
 # Scripts, Files, & Directories (alphabetical)
 `.gitignore`: ignore \*.sublime-workspace
 
-`.sh`: filters stdin for songs in `basedir`
-
 `albums.m3u`: `playlists.m3u` for albums
 
 `archivecheck.sh`: finds downloads in `archivedir` with their IDs also in `basedir` (recursive); stdout is paths to each archive duplicate
@@ -49,9 +47,7 @@
 
 `music.sublime-project`: trivial Sublime Text project
 
-`playlistalbums.sh`: prints the 'album' property of the songs in each playlist in `playlists.m3u`, in order of count
-
-`playlistnames.sh`: prints 'playlist id', 'channel', and 'playlist title' properties of each playlist in `playlists.m3u`
+`nametoignores.sh`: turns list of filenames from stdin to ytdl .archive list
 
 `playlists.m3u`: contains playlist locators, one per line; either .m3u or online
 
@@ -60,6 +56,8 @@
 `recentinlog.sh`: follows logs in /tmp/dl/link/\* and prints download numbers until program with pid $1 exits
 
 `square.sh`: Crops image $1 to square, centered, inplace; required for `dl.sh` covers
+
+`squarecheck.sh`: finds downloads with non-square covers in `basedir`
 
 `tailexisting.sh`: tail log of currently running pids in waitlist
 

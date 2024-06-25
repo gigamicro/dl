@@ -31,6 +31,12 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
     #   ;;
     artists)
       echo 'artist'
+      if [ "${listurl#*youtube.com}" == "$listurl" ]&&
+        [ "${listurl#*youtube.com/playlist}" != "$listurl" ]&&
+        [ "${listurl#*youtube.com/watch}" != "$listurl" ]; then
+          echo "YT channel handling"
+          listurl="${listurl%/videos}/videos"
+      fi
       name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
         s/ - Topic$//;
         s/\W*official channel\W*$//i;
