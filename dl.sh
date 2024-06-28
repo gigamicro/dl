@@ -25,10 +25,6 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
     name="$(basename "$listurl" .m3u)"
   else
     case $listing in
-    # playlists)
-    #   echo 'playlist'
-    #   name="$(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
-    #   ;;
     artists)
       echo 'artist'
       if [ "${listurl#*youtube.com}" == "$listurl" ]&&
@@ -41,7 +37,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
         s/ - Topic$//;
         s/\W*official channel\W*$//i;
         ss/s⧸s;
-        ')"
+      ')"
       if [ "$name" = "NA" ]; then
         if [ "${listurl#*soundcloud.com}" != "$listurl" ]; then
           name="${listurl#*soundcloud.com/}"
@@ -65,21 +61,11 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
         ')"
       echo "name: $name, album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
       ;;
-    # albums)
-    #   echo 'album'
-    #   name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | \
-    #     sed '
-    #     s/^Album - //;
-    #     s/ *(.*)$//;
-    #     s/ *O[fficial riginal]*S[ound ]*T[rack]*$//i;
-    #     s/ *-.*$//;
-    #     ')"
-    #   ;;
     *) echo "big error, unrecognised \$listing";;
     esac
   fi
   if [ -z "$name" ]||[ "$name" = 'NA' ]; then
-    echo 'invalid playlist name'
+    echo 'no playlist name'
     ln -svrT "$logloc" "/tmp/dl/link/${listurl##*/}.log"
     exit
   fi
@@ -137,6 +123,7 @@ done
 # date +"complete at %FT%T"
 echo "sure thing boss ($$)"
 wait # (doesn't)
+# "$scriptdir/tailexisting.sh"
 while read i; do
   while kill -0 "$i" 2>&-; do
     sleep 6
