@@ -14,7 +14,6 @@ cd "/tmp/dl" # test canonicalization
 for listing in "playlists" "artists" "albums"; do
 grep -v '^[;#]' "$scriptdir/$listing.m3u" | \
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl/log/${listurl##*/}.log"; (
-  # yt-dlp --version || echo "$PATH"
   case $listing in
     playlists|artists) coverflag=y ;;
     albums) coverflag=n ;;
@@ -27,19 +26,15 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
     case $listing in
     artists)
       echo 'artist'
-      if [ "${listurl#*youtube.com}" == "$listurl" ]&&
-        [ "${listurl#*youtube.com/playlist}" != "$listurl" ]&&
-        [ "${listurl#*youtube.com/watch}" != "$listurl" ]; then
-          echo "YT channel handling"
-          listurl="${listurl%/videos}/videos"
-      fi
       name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
         s/ - Topic$//;
         s/\W*official channel\W*$//i;
         ss/s⧸s;
       ')"
       if [ "$name" = "NA" ]; then
-        if [ "${listurl#*soundcloud.com}" != "$listurl" ]; then
+        if   [ "${listurl#*youtube.com}" != "$listurl" ]; then
+          name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ - Videos$//')"
+        elif [ "${listurl#*soundcloud.com/}" != "$listurl" ]; then
           name="${listurl#*soundcloud.com/}"
           name="${name%%/*}"
           listurl="${listurl%%soundcloud.com/*}soundcloud.com/$name/tracks"
