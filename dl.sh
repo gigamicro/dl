@@ -38,6 +38,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
           name="${listurl#*soundcloud.com/}"
           name="${name%%/*}"
           listurl="${listurl%%soundcloud.com/*}soundcloud.com/$name/tracks"
+          name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ (Tracks)$//')"
         fi
       fi
       ;;
