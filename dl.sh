@@ -13,7 +13,7 @@ cd "/tmp/dl" # test canonicalization
 # shellcheck disable=SC2046 disable=SC2166 disable=SC2094
 for listing in "playlists" "artists" "albums"; do
 grep -v '^[;#]' "$scriptdir/$listing.m3u" | \
-while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl/log/${listurl##*/}.log"; (
+while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl/log/${listurl##*/}.log"; {
   case $listing in
     playlists|artists) coverflag=y ;;
     albums) coverflag=n ;;
@@ -112,7 +112,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   rm "$dir/$name.archive"
 
   date +"├────────────────┤ done at %FT%T ├────────────────┤"
-  ) >"$logloc" 2>&1 &
+  } >"$logloc" 2>&1 &
 printf '%s\n' "$!" >> /tmp/dl.wait.pids
 done
 done
