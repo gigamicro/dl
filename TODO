@@ -12,3 +12,15 @@ rest of wf ost
 also check to see if some of local could be in dl
 
 add doc comment lines at start of files?
+
+note:
+youtube abcdABCD123  ->  https://youtu.be/abcdABCD123
+soundcloud 895013827  ->  https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/895013827
+
+some way to just adapt the arch-dl checks to arch-arch
+
+keep state in folders - don't update m3u if unnecessary, log important variables (eg playlist vs album)
+m3u mtime vs last list change?
+untouched check in dl?
+
+match identical songs with added artists eg purity filter
