@@ -41,6 +41,6 @@ find "$basedir"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
 		sort | uniq -u | tee -a /dev/fd/2 | wc -l
 	)" -eq 0 ] || { printf "%s\n\n" "$i" >&2 ;false;}; } && \
-	find "$archivedir/" -ipath "${i} \[*].*" -o -ipath "${i}-???????????.*"
+	find "$archivedir/" -ipath "*/${i} \[*].*" -o -ipath "*/${i}-???????????.*"
 	# echo>&2
 done #>/dev/null #2>/dev/null
