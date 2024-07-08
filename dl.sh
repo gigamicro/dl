@@ -116,14 +116,16 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
 printf '%s\n' "$!" >> /tmp/dl.wait.pids
 done
 done
-# date +"complete at %FT%T"
 echo "sure thing boss ($$)"
-wait # (doesn't)
 # "$scriptdir/tailexisting.sh"
-while read i; do
-  while kill -0 "$i" 2>&-; do
-    sleep 6
-  done
-done </tmp/dl.wait.pids
+wait
+wait=1
+while [ -n "$(
+  while read i; do
+    kill -0 "$i" 2>&- && echo || echo done
+  done </tmp/dl.wait.pids |
+  wc -wl | sed 's/^ *\([0-9]*\) *\([0-9]*\)$/\2\/\1/' |
+  tee -a /dev/fd/2 | sed 'ss^\([0-9]*\)/\1$ss'
+)" ]; do sleep 2.718281828459; done 2>&1 | stdbuf -o 16 tr '\n' '\r'
 rm /tmp/dl.wait.pids
 echo "done boss"
