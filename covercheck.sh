@@ -1,16 +1,13 @@
 #!/bin/sh
-find "$(cat "$(dirname "$0")/basedir")" ! -empty -name '*].*' | \
+find "$(cat "$(dirname "$0")/basedir")" ! -empty -name '* \[*].*' | \
 while read i; do (
-  external="$(find "$(dirname "$i")" -name 'cover.*' | head -c 6)"
-  if ffprobe -hide_banner -show_entries 'stream=codec_type' -select_streams v "$i" 2>&- | read qwe >/dev/null; then
-    if [ -n "$external" ]; then
-      printf 'redundant: %s\n' "$i"
-    fi
-  else
-    if [ -z "$external" ]; then
-      printf 'missing  : %s\n' "$i"
-    fi
-  fi
-  ) & sleep 0.00625
-done
+  # printf . >&2
+  external="$(find "$(dirname "$i")" -name 'cover.*' | head -c 1)"
+  dims="$(ffprobe -hide_banner -show_entries 'stream=width,height' -select_streams v "$i" 2>&- | grep = | tr '\n' ' ')"
+  [ -n "$external" ] && [ -n "$dims" ] && printf 'redundant: %s\n' "$i" && exit
+  [ -z "$external" ] && [ -z "$dims" ] && printf 'missing  : %s\n' "$i" && exit
+  [ -z "$external" ] && ! printf '%s\n' "$dims" | grep '^width=\([0-9]*\) height=\1 $' >/dev/null && printf 'nonsquare: %s\n' "$i" && exit
+  # printf ! >&2
+) & sleep 0.0005; done
+echo cover checks launched >&2
 wait
