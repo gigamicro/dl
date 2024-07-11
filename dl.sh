@@ -15,8 +15,8 @@ for listing in "playlists" "artists" "albums"; do
 grep -v '^[;#]' "$scriptdir/$listing.m3u" | \
 while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl/log/${listurl##*/}.log"; {
   case $listing in
-    playlists|artists) coverflag=y ;;
-    albums) coverflag=n ;;
+    playlists|artists) coverflag=individual ;;
+    albums) coverflag=group ;;
     *) echo "big error, unrecognised \$listing";;
   esac
   if [ -f "$listurl" ]; then
@@ -88,12 +88,12 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
   --embed-thumbnail --exec before_dl:"find . -name '"'* \[%(id)s].*'"' -print0 | xargs -0 -n 1 '$scriptdir/square.sh'" \
-  $( ! [ "$coverflag" = "y" ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s")
+  $( [ "$coverflag" = group ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s")
   #--playlist-random -i \
   #--print-to-file filename "$name.m3u" \
 
-  if [ "$coverflag" = "y" ]; then echo "No downloaded cover (coverflag unset)"
-  elif [ -n "$(find . -name 'cover.*' -quit)" ]; then echo "No downloaded cover (cover exists)"
+  if [ "$coverflag" = individual ]; then echo "No downloaded cover (coverflag unset)"
+  elif [ -n "$(find . -name 'cover.*' -print -quit)" ]; then echo "No downloaded cover (cover exists)"
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
   else
     echo "Auto cover"
