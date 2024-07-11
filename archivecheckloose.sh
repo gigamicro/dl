@@ -3,7 +3,8 @@ archivedir="$(cat "$(dirname "$0")/archivedir")"
 basedir="$(   cat "$(dirname "$0")/basedir")"
 {
 find "$archivedir" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
- sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | tr '[:lower:]' '[:upper:]' | sort | uniq
+ sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | tr '[:lower:]' '[:upper:]' | { [ -z "$1" ] && sort | uniq || cat; }
+[ -z "$1" ] &&
 find "$basedir"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
  sed 's/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//'  | tr '[:lower:]' '[:upper:]' | sort | uniq
 } | sort | uniq -d | \
@@ -41,6 +42,6 @@ find "$basedir"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*
 		# -e :comment= -e :synopsis= -e :date= -e :handler_name= \
 		sort | uniq -u | tee -a /dev/fd/2 | wc -l
 	)" -eq 0 ] || { printf "%s\n\n" "$i" >&2 ;false;}; } && \
-	find "$archivedir/" -ipath "*/${i} \[*].*" -o -ipath "*/${i}-???????????.*"
+	find "$archivedir/" -ipath "*/${i} \[*].*" -o -ipath "*/${i}-???????????.*" | { [ -z "$1" ] && cat || sort|tail -n+2; }
 	# echo>&2
 done #>/dev/null #2>/dev/null

@@ -42,8 +42,9 @@ else
 	echo ===duplicatecheck===; 			"$scriptdir/duplicatecheck.sh"
 	echo ===archivecheckstrict===; 		"$scriptdir/archivecheckstrict.sh"
 	echo ===archivecheck===; 			"$scriptdir/archivecheck.sh"
+	echo ===archivecheck arch===; 		"$scriptdir/archivecheck.sh" arch
 	echo ===archivecheckloose===; 		"$scriptdir/archivecheckloose.sh"
-	echo ===archiveduplicatecheck===; 	"$scriptdir/archiveduplicatecheck.sh"
+	echo ===archivecheckloose arch===; 	"$scriptdir/archivecheckloose.sh" arch
 fi
 echo ===untouchedcheck===; 	"$scriptdir/untouchedcheck.sh" "$timestamp"
 # echo ===crossdupecheck===; 	"$scriptdir/crossdupecheck.sh"
