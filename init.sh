@@ -31,8 +31,9 @@ if [ "$1" = "z" ]; then
 	echo ===duplicatecheck \| toarchive===; 		"$scriptdir/duplicatecheck.sh" | "$scriptdir/toarchive.sh"
 	echo ===archivecheckstrict \| rm===; 			"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v --
 	echo ===archivecheck \| rm===; 					"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v --
+	echo ===archivecheck arch \| rm===; 			"$scriptdir/archivecheck.sh" arch | xargs -rd \\n rm -v --
 	echo ===archivecheckloose \| rm===; 			"$scriptdir/archivecheckloose.sh" | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --
-	echo ===archiveduplicatecheck \| rm===; 		"$scriptdir/archiveduplicatecheck.sh" | xargs -rd \\n rm -v --
+	echo ===archivecheckloose arch \| rm===; 		"$scriptdir/archivecheckloose.sh" arch | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --
 	echo ===cull===; 								"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 else
 	echo ===faVduplicatecheck===; 		"$scriptdir/faVduplicatecheck.sh"
