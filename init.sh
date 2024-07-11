@@ -2,7 +2,7 @@
 scriptdir="$(dirname "$0")"
 exec 2>&1
 if [ -e /tmp/dl.lock ]; then echo '/tmp/dl.lock exists'; return 1; fi
-touch /tmp/dl.lock
+echo $$ > /tmp/dl.lock
 timestamp="$(date +%s)"
 echo ===untrash===
 "$scriptdir/untrash.sh"
@@ -21,8 +21,7 @@ if [ -f ~/Music/maybe\ remove.m3u ]; then
 	cat ~/Music/maybe\ remove.m3u 2>&1 1>> ~/Music/maybe\ remove~.m3u && rm ~/Music/maybe\ remove.m3u
 fi
 
-echo ===dl\&recentinlog===
-"$scriptdir/dl.sh" & sleep 6;"$scriptdir/recentinlog.sh" $!
+echo ===dl\&recentinlog===; "$scriptdir/dl.sh" & sleep 6;"$scriptdir/recentinlog.sh" $!
 if [ "$1" = "z" ]; then
 	echo ===faVduplicatecheck \| fromfaV===; 		"$scriptdir/faVduplicatecheck.sh" | "$scriptdir/nametoignores.sh" | cut -d\  -f2- | "$scriptdir/fromfaV.sh"
 	echo ===m3ucheck \| toarchive===; 				"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
