@@ -2,11 +2,11 @@
 archivedir="$(cat "$(dirname "$0")/archivedir")"
 basedir="$(   cat "$(dirname "$0")/basedir")"
 {
-find "$archivedir" -type f | grep '[[-][a-zA-Z0-9_-]\{11\}[].]' | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
- sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//' | tr '[:lower:]' '[:upper:]' | { [ -z "$1" ] && sort | uniq || cat; }
+find "$archivedir" -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' -o -regex '-[a-zA-Z0-9_-]\{11\}\.' | grep -o '[^/]*/[^/]*$' | \
+ sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$//; t;d' | tr '[:lower:]' '[:upper:]' | { [ -z "$1" ] && sort | uniq || cat; }
 [ -z "$1" ] &&
-find "$basedir"    -type f | grep   '\[[a-zA-Z0-9_-]\{11\}\]'   | grep -o '[^/]*/[^/]*$' | grep -v '^faV/' | \
- sed 's/ \[[a-zA-Z0-9_-]\{11\}\]\..*$//'  | tr '[:lower:]' '[:upper:]' | sort | uniq
+find "$basedir"    -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | grep -o '[^/]*/[^/]*$' | \
+ sed 's/ \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$//; t;d'  | tr '[:lower:]' '[:upper:]' | sort | uniq
 } | sort | uniq -d | \
 "$(dirname "$0")/unpattern.sh" | while read -r i; do
 {
