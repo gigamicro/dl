@@ -93,11 +93,12 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   #--print-to-file filename "$name.m3u" \
 
   if [ "$coverflag" = individual ]; then echo "No downloaded cover (coverflag unset)"
-  elif [ -n "$(find . -name 'cover.*' -print -quit)" ]; then echo "No downloaded cover (cover exists)"
+    find . -name 'cover.*' -print0 | xargs -0 rm -v
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
+    find . -name 'cover.*' -print0 | xargs -0 rm -v
+  elif [ -n "$(find . -name 'cover.*' -print -quit)" ]; then echo "No downloaded cover (cover exists)"
   else
     echo "Auto cover"
-    find . -name 'cover.*' -print0 | xargs -0 rm -v
     yt-dlp "$listurl" --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
     find . -name 'cover.*' -print0 | xargs -0 -n 1 "$scriptdir/square.sh"
   fi
