@@ -1,7 +1,5 @@
 #!/bin/sh
 {
-find "$(cat "$(dirname "$0")/archivedir")" -type f ! -name 'cover.*' ! -name '*.m3u' | xargs -L 1 -d '\n' basename -a | sort | uniq
-find "$(cat "$(dirname "$0")/basedir")"    -type f ! -name 'cover.*' ! -name '*.m3u' | xargs -L 1 -d '\n' basename -a | sort | uniq
-} | sort | uniq -d | \
-while read -r i; do find "$(cat "$(dirname "$0")/archivedir")" | grep -F "$i"; done
-#xargs -L 1 -rd '\n' find "$(cat "$(dirname "$0")/archivedir")" -type f -name
+find "$(cat "$(dirname "$0")/archivedir")" -type f ! -name 'cover.*' ! -name '*.m3u' -print0 | xargs -0 basename -za | sort -z | uniq -z
+find "$(cat "$(dirname "$0")/basedir")"    -type f ! -name 'cover.*' ! -name '*.m3u' -print0 | xargs -0 basename -za | sort -z | uniq -z
+} | sort -z | uniq -zd | "$(dirname "$0")/unpattern.sh" | xargs -0rn 1 find "$(cat "$(dirname "$0")/archivedir")" -name
