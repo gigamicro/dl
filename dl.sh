@@ -27,17 +27,17 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
     artists)
       echo 'artist'
       if   [ "${listurl#*youtube.com}" != "$listurl" ]; then
-        name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ - Videos$//')"
+        name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ - Videos$//;ss/s⧸sg')"
       elif [ "${listurl#*soundcloud.com/}" != "$listurl" ]; then
         name="${listurl#*soundcloud.com/}"
         name="${name%%/*}"
         listurl="${listurl%%soundcloud.com/*}soundcloud.com/$name/tracks"
-        name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ (Tracks)$//')"
+        name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ (Tracks)$//;ss/s⧸sg')"
       else
         name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
           s/ - Topic$//;
           s/\W*official channel\W*$//i;
-          ss/s⧸s;
+          ss/s⧸sg;
         ')"
       fi
       ;;
@@ -51,8 +51,8 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
         s/ *\[[^[]*]$//;
         s/ *-.*$//;
         s/ *O[fficial riginal Game]*S[ound ]*T[rack]*//i;
-        s/:/∶/;
-        ss/s⧸s;
+        s/:/∶/g;
+        ss/s⧸sg;
         ')"
       echo "name: $name, album: $(yt-dlp "$listurl" --print album | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 )"
       ;;
