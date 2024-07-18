@@ -13,7 +13,15 @@ find "$basedir"    -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | grep -o
 	find "$(cat "$(dirname "$0")/basedir")/" "$archivedir/" -type f \
 	-ipath "*/$i \[*].*" -o -ipath "*/$i-???????????.*" | \
 	# { printf '%s\n' "$i" >&2; cat; } | \
+	# tee -a /dev/fd/2 | \
 	xargs -rd \\n -n 1 ffprobe -loglevel error -show_entries 'stream_tags:stream:format_tags:format' | \
+	sed '
+	/TAG:synopsis=/,/\[\/FORMAT]/{/TAG:synopsis=/b;/\[\/FORMAT]/b; s/^/TAG:synopsis=/};
+	/TAG:description=/,/TAG:synopsis=/{/TAG:description=/b;/TAG:synopsis=/b; s/^/TAG:description=/};
+	' | \
+	# grep -ve '=' -e '^\[' |
+	# grep -e 'TAG:description' -e 'TAG:synopsis' |
+	# tee -a /dev/fd/2 |
 	grep -v \
 	-e '^bit_rate=' \
 	-e '^codec_long_name=' \
@@ -26,6 +34,7 @@ find "$basedir"    -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | grep -o
 	-e '^color_primaries=' \
 	-e '^display_aspect_ratio=' \
 	-e '^DISPOSITION=' \
+	-e '^DISPOSITION:[a-z]*=' \
 	-e '^extradata_size=' \
 	-e '^filename=' \
 	-e '^format_long_name=' \
@@ -53,3 +62,5 @@ find "$basedir"    -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | grep -o
 	| sort | uniq -u | tee -a /dev/fd/2 | { ! grep '' -m1 >&2;} || { printf %s\\n "$i" | tee -a /dev/fd/2 | tr -c \\n - >&2; false;}
 } && find "$archivedir/" -type f -ipath "*/$i \[*].*" -o -ipath "*/$i-???????????.*" | { [ -z "$1" ] && cat || sort|tail -n+2; } || true
 done
+
+# [ -n "$1" ] || { echo ====== >&2; "$0" arch; }
