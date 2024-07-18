@@ -24,3 +24,16 @@ m3u mtime vs last list change?
 untouched check in dl?
 
 match identical songs with added artists eg purity filter
+
+move logs to persistant location?
+
+skip previously known-to-be-available and -unavailable entries in file playlist?
+
+add error for $0 = /bin/sh etc (no match to *.sh)
+
+seperate init.sh functions beyond xargs rm or toarchive into source files when $1 = something?
+
+geoxor
+nandayo, aether?
+
+6g tapeworm : dupe
