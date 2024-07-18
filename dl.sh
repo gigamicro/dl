@@ -26,7 +26,8 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
     case $listing in
     artists)
       echo 'artist'
-      if   [ "${listurl#*youtube.com}" != "$listurl" ]; then
+      if   [ "${listurl#*youtube.com/@}" != "$listurl" ]; then
+        listurl="${listurl%/videos}/videos"
         name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ - Videos$//;ss/s⧸sg')"
       elif [ "${listurl#*soundcloud.com/}" != "$listurl" ]; then
         listurl="${listurl%/tracks}/tracks"
@@ -90,9 +91,9 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   #--print-to-file filename "$name.m3u" \
 
   if [ "$coverflag" = individual ]; then echo "No downloaded cover (coverflag unset)"
-    find . -name 'cover.*' -print0 | xargs -0 rm -v
+    find . -name 'cover.*' -print0 | xargs -0r rm -v
   elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
-    find . -name 'cover.*' -print0 | xargs -0 rm -v
+    find . -name 'cover.*' -print0 | xargs -0r rm -v
   elif [ -n "$(find . -name 'cover.*' -print -quit)" ]; then echo "No downloaded cover (cover exists)"
   else
     echo "Auto cover"
