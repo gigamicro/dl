@@ -1,5 +1,5 @@
 #!/bin/sh
-grep -ve ']\..*\.part' -e ']\..*\.ytdl$' |
+grep -ve ']\..*\.part' -e ']\..*\.ytdl$' -e '\.archive$' |
 while read -r i; do
   dir="$(cat "$(dirname "$0")/archivedir")/$(basename "$(dirname "$i")")"
   mkdir -vp "$dir"
