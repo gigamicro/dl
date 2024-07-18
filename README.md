@@ -80,3 +80,5 @@
 `untouchedcheck.sh`: lists m3u files that weren't touched since $1 (unix timestamp) or one hour ago
 
 `untrash.sh`: renames android-style trashed files to no longer be trashed (ie '.trashed-##########-...' -> '...')
+
+`whichlogs.sh`: which log files have not yet created a log link?
