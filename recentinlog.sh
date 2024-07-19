@@ -20,7 +20,7 @@ while read -r i; do
 	*'This video is not available'*) echo ': Video not available' | cat /tmp/$$.currentsource - ;;
 	'[download] Got error:'*) printf ':%s\n' "${i#\[download]}" | cat -t /tmp/$$.currentsource - ;;
 	*'Video unavailable'*) echo ': Video unavailable' | cat /tmp/$$.currentsource - ;;
-	*': HTTP Error 404'*)printf ': HTTP 404: Not Found f.%s\n' "${i##*fragment }" | cat -t /tmp/$$.currentsource - ;;
+	*': HTTP Error 404'*)printf ': HTTP 404: Not Found, %s\n' "${i%%: HTTP Error 404*}" | cat -t /tmp/$$.currentsource - ;;
 	├────────────────┤*) echo ': Done' | cat /tmp/$$.currentsource - ;;
 	'Writing playlist')printf ': %s\n' "$i" | cat /tmp/$$.currentsource - ;;
 	'ERROR: '*) printf ': %s\n' "$i" | cat -t | cat /tmp/$$.currentsource - ;;
