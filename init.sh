@@ -1,9 +1,11 @@
 #! /bin/sh
-scriptdir="$(dirname "$0")"
 exec 2>&1
-if [ -e /tmp/dl.lock ]; then echo '/tmp/dl.lock exists'; return 1; fi
-echo $$ > /tmp/dl.lock
+scriptdir="$(dirname "$0")"
+LOCKFILE=/tmp/dl.lock
+if [ -e $LOCKFILE ]; then echo $LOCKFILE exists; return 1; fi
+echo $$ > $LOCKFILE
 timestamp="$(date +%s)"
+
 echo ===untrash===
 "$scriptdir/untrash.sh"
 if [ -f ~/Music/maybe\ remove.m3u ]; then
@@ -49,4 +51,4 @@ fi
 echo ===untouchedcheck===; 	"$scriptdir/untouchedcheck.sh" "$timestamp"
 # echo ===crossdupecheck===; 	"$scriptdir/crossdupecheck.sh"
 
-rm -v /tmp/dl.lock
+[ -f $LOCKFILE ] && grep -Fqm1 $$ $LOCKFILE && rm -v $LOCKFILE
