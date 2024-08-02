@@ -58,6 +58,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
     *) echo "big error, unrecognised \$listing";;
     esac
   fi
+  date -Is
   if [ -z "$name" ]||[ "$name" = 'NA' ]; then
     echo 'no playlist name'
     ln -svrT "$logloc" "/tmp/dl/link/${logloc##*/}"
