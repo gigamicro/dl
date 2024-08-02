@@ -8,6 +8,6 @@ while read i; do (
   [ -z "$external" ] && [ -z "$dims" ] && printf 'missing  : %s\n' "$i" && exit
   [ -z "$external" ] && ! printf '%s\n' "$dims" | grep '^width=\([0-9]*\) height=\1 $' >/dev/null && printf 'nonsquare: %s\n' "$i" && exit
   # printf ! >&2
-) & sleep 0.0005; done
+) & sleep .00390625; done
 # echo cover checks launched >&2
 wait
