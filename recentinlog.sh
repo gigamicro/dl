@@ -1,8 +1,4 @@
 #!/bin/sh
-while [ "$(printf '%s\n' /tmp/dl/link/* | wc -l)" -lt "$(printf '%s\n' /tmp/dl/log/* | wc -l)" ]; do
-	printf '%s\r' "$(printf '%s\n' /tmp/dl/link/* | wc -l)/$(printf '%s\n' /tmp/dl/log/* | wc -l)"
-	sleep 6
-done
 echo "Following $1 ($(printf '%s\n' /tmp/dl/link/* | wc -l) files)"
 stdbuf -o L tail "${1+--pid=$1}" -n +1 -f /tmp/dl/link/* 2>&1 | \
 stdbuf -o L grep -a -e '^\[download] Downloading item [0-9]* of [0-9]*$' -e '^ERROR: ' -e '^\[download] Got error:' \

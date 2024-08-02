@@ -21,7 +21,11 @@ if [ -f ~/Music/maybe\ remove.m3u ]; then
 	cat ~/Music/maybe\ remove.m3u 2>&1 1>> ~/Music/maybe\ remove~.m3u && rm ~/Music/maybe\ remove.m3u
 fi
 
-echo ===dl\&recentinlog===; "$scriptdir/dl.sh" & sleep 6;"$scriptdir/recentinlog.sh" $!
+echo ===dl\&recentinlog===; "$scriptdir/dl.sh" & sleep 6;
+"$scriptdir/waitforlogs.sh";
+# "$scriptdir/recentinlog.sh" $!;
+"$scriptdir/logsummary.sh" $!;
+wait $!
 if [ "$1" = "z" ]; then
 	echo ===faVduplicatecheck \| fromfaV===; 		"$scriptdir/faVduplicatecheck.sh" | "$scriptdir/nametoignores.sh" | cut -d\  -f2- | "$scriptdir/fromfaV.sh"
 	echo ===m3ucheck \| toarchive===; 				"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"
