@@ -74,7 +74,8 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   # find . -maxdepth 1 -name '*.temp*' -delete
   # find . -type f ! -name 'cover.*' -name '*.webp' -o -name '*.part' -delete
 
-  find . -maxdepth 1 ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' ! -iname '*.part' ! -iname '* [*].temp.*' ! -empty | \
+  find . -maxdepth 1 ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' \
+  ! -iname '*.part' ! -iname '*.part-Frag*' ! -iname '* [*].temp.*' ! -iname '*.ytdl' ! -empty | \
   "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
   if [ -f "$scriptdir/ignore/$name.archive" ]; then
     echo "Applying ignore"
