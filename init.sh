@@ -2,8 +2,8 @@
 exec 2>&1
 scriptdir="$(dirname "$0")"
 LOCKFILE=/tmp/dl.lock
-if [ -e $LOCKFILE ]; then echo $LOCKFILE exists; return 1; fi
-echo $$ > $LOCKFILE
+if [ -e "$LOCKFILE" ]; then printf '%s exists\n' "$LOCKFILE"; return 1; fi
+echo $$ > "$LOCKFILE"
 timestamp="$(date +%s)"
 
 echo ===untrash===
@@ -36,7 +36,7 @@ if [ "$1" = "z" ]; then
 	echo ===archivecheckloose arch \| rm===; 	{ "$scriptdir/archivecheckloose.sh" arch | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --; } 2>&1
 	echo ===cull===; 							"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 else
-	grep -Fqm1 $$ $LOCKFILE && rm -v $LOCKFILE
+	grep -Fqm1 $$ "$LOCKFILE" && rm -v "$LOCKFILE"
 	echo ===duplicatem3ucheck/s===; 	"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'faV'
 	                                	"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'Danger'
 	                                	"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'Carpenter Brut'
@@ -54,4 +54,4 @@ fi
 echo ===untouchedcheck===; 	"$scriptdir/untouchedcheck.sh" "$timestamp"
 # echo ===crossdupecheck===; 	"$scriptdir/crossdupecheck.sh"
 
-[ -f $LOCKFILE ] && grep -Fqm1 $$ $LOCKFILE && rm -v $LOCKFILE
+[ -f "$LOCKFILE" ] && grep -Fqm1 $$ "$LOCKFILE" && rm -v "$LOCKFILE"
