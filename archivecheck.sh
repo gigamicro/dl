@@ -4,7 +4,7 @@ basedir="$(cat "$(dirname "$0")/basedir")"
 # set y;archivedir="$basedir"
 {
 find "$archivedir" -type f | grep -oe ' \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' -e '-[a-zA-Z0-9_-]\{11\}\.' |
- cut -d . -f 1 | sed 's/^[[ -]*//;s/]$//' | { [ -z "$1" ] && sort | uniq || cat; }
+ cut -d . -f 1 | sed 's/^ \[//; s/^-//; s/]$//' | { [ -z "$1" ] && sort | uniq || cat; }
 [ -z "$1" ] &&
 find "$basedir"    -type f | grep -o  ' \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | cut -c 3- | cut -d ] -f 1 | sort | uniq
 } | sort | uniq -d | \
