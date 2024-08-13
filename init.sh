@@ -6,6 +6,15 @@ if [ -e "$LOCKFILE" ]; then printf '%s exists\n' "$LOCKFILE"; return 1; fi
 echo $$ > "$LOCKFILE"
 timestamp="$(date +%s)"
 
+LOgFILE=/tmp/dl/dl.log
+LOhFILE=~/.local/share/dl/"$(date -Is)".log
+dirname -z "$LOgFILE" "$LOhFILE" | xargs -0r mkdir -pv
+p=$(mktemp -u);mkfifo $p;{
+# anything in here has <(our stdout) and >(our old stdout)
+tee "$LOgFILE" /dev/fd/2 | sed -z 's/\r\n/\n/' | sed 's/^.*\r//' > "$LOhFILE"
+}<$p&exec>$p;rm $p;p=;
+exec 2>&1
+
 echo ===untrash===
 "$scriptdir/untrash.sh"
 if [ -f ~/Music/maybe\ remove.m3u ]; then
