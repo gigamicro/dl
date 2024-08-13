@@ -2,7 +2,7 @@
 scriptdir="$(readlink -f -z "$0" | xargs -0 dirname)" # canonicalize because there is a cd later
 basedir="$(cat "$scriptdir/basedir")"
 rm -v /tmp/dl.wait.pids 2> /dev/null
-mkdir -v "$basedir" 2> /dev/null
+mkdir -vp "$basedir"
 rm -r "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 mkdir "/tmp/dl" "/tmp/dl/link" "/tmp/dl/log" 2> /dev/null
 cd "/tmp/dl" # test canonicalization
@@ -121,9 +121,8 @@ done
 echo "sure thing boss ($$)"
 # "$scriptdir/tailexisting.sh"
 wait
-wait=1
 while [ -n "$(
-  while read i; do
+  while read -r i; do
     kill -0 "$i" 2>&- && echo || echo done
   done </tmp/dl.wait.pids |
   wc -wl | sed 's/^ *\([0-9]*\) *\([0-9]*\)$/\2\/\1/' |
