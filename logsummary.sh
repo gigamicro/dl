@@ -7,7 +7,7 @@ while read -r i; do
 	case $i in
 	'==> '*' <==') printf '%s' "$i" | head -c -4 | tail -c +5 >/tmp/$$.currentsource ;;
 	'Auto cover')printf ': %s\n' "cover.*" | cat /tmp/$$.currentsource - ;;
-	'success:'*)printf '/%s\n' "${i#success:}" | cat -t /tmp/$$.currentsource - ;;
+	'success:'*)printf '/%s\n' "${i#success:}" | cat /tmp/$$.currentsource - ;;
 	*) printf 'err: "%s" in log "%s"\n' "$i" "$(cat /tmp/$$.currentsource)";;
 	esac
 done #| tee /tmp/recentin.log 

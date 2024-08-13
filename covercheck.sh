@@ -1,6 +1,6 @@
 #!/bin/sh
 find "$(cat "$(dirname "$0")/basedir")" ! -empty -name '* \[*].*' | \
-while read i; do (
+while read -r i; do (
   # printf . >&2
   external="$(find "$(dirname "$i")" -name 'cover.*' | head -c 1)"
   dims="$(ffprobe -hide_banner -show_entries 'stream=width,height' -select_streams v "$i" 2>&- | grep = | tr '\n' ' ')"
