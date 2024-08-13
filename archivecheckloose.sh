@@ -1,6 +1,8 @@
 #!/bin/sh
 archivedir="$(cat "$(dirname "$0")/archivedir")"
 basedir="$(   cat "$(dirname "$0")/basedir")"
+exec 3>&2
+exec 3>/dev/null
 {
 find "$archivedir" -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' -o -regex '-[a-zA-Z0-9_-]\{11\}\.' | grep -o '[^/]*/[^/]*$' | \
  sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$//; t;d' | tr '[:lower:]' '[:upper:]' | { [ -z "$1" ] && sort | uniq || cat; }
@@ -98,13 +100,14 @@ find "$basedir"    -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | grep -o
 	-e '^TAG:ENCODER=' \
 	-e '^TAG:encoder=' \
 	-e '^TAG:handler_name=ISO Media file produced by Google Inc\.' \
+	-e '^TAG:language=' \
 	-e '^TAG:language=und$' \
 	-e '^TAG:purl=http' \
 	-e '^TAG:synopsis=[Pp]laylist: http' \
 	-e '^TAG:synopsis=http' \
 	-e '^TAG:vendor_id=\[0]\[0]\[0]\[0]$' \
 	-e '^width=' \
-	| LC_ALL=C sort | uniq -ui | tee -a /dev/fd/2 | { ! grep '' -qm1;} || { printf %s\\n "$i" | tee -a /dev/fd/2 | tr -c \\n - >&2; false;}
+	| sort | uniq -ui | tee -a /dev/fd/3 | { ! grep '' -qm1;} || { printf %s\\n "$i" | tee -a /dev/fd/3 | tr -c \\n - >&3; false;}
 } && find "$archivedir/" -type f -ipath "*/$i \[*].*" -o -ipath "*/$i-???????????.*" | { [ -z "$1" ] && cat || sort|tail -n+2; } || true
 done
 
