@@ -11,7 +11,7 @@ LOhFILE=~/.local/share/dl/"$(date -Is)".log
 dirname -z "$LOgFILE" "$LOhFILE" | xargs -0r mkdir -pv
 p=$(mktemp -u);mkfifo $p;{
 # anything in here has <(our stdout) and >(our old stdout)
-tee "$LOgFILE" /dev/fd/2 | sed -z 's/\r\n/\n/' | sed 's/^.*\r//' > "$LOhFILE"
+tee "$LOgFILE" /dev/fd/2 | sed 's/\r$//; s/^.*\r//' > "$LOhFILE"
 }<$p&exec>$p;rm $p;p=;
 exec 2>&1
 
