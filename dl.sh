@@ -70,10 +70,6 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   mkdir -v "$dir"
   cd "$dir" || exit
 
-  # rm -v ./*.mp4 ./*.webp ./*].png ./*.part ./*.jpg ./*.temp.* 2> /dev/null && echo "Deleted remains"
-  # find . -maxdepth 1 -name '*.temp*' -delete
-  # find . -type f ! -name 'cover.*' -name '*.webp' -o -name '*.part' -delete
-
   find . -maxdepth 1 ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' \
   ! -iname '*.part' ! -iname '*.part-Frag*' ! -iname '* [*].temp.*' ! -iname '*.ytdl' ! -empty | \
   "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
@@ -95,13 +91,13 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
 
   if [ "$coverflag" = individual ]; then echo "No downloaded cover (coverflag unset)"
     find . -name 'cover.*' -print0 | xargs -0r rm -v
-  elif [ -f "$listurl" ];       then echo "No downloaded cover (local playlist)"
+  elif [ -f "$listurl" ];           then echo "No downloaded cover (local playlist)"
     find . -name 'cover.*' -print0 | xargs -0r rm -v
   elif [ -n "$(find . -name 'cover.*' -print -quit)" ]; then echo "No downloaded cover (cover exists)"
   else
     echo "Auto cover"
     yt-dlp "$listurl" --write-thumbnail --skip-download --max-downloads 1 -o 'cover'
-    find . -name 'cover.*' -print0 | xargs -0 -n 1 "$scriptdir/square.sh"
+    find . -name 'cover.*' -print0 | xargs -0rn1 "$scriptdir/square.sh"
   fi
 
   echo "Writing playlist"
@@ -119,14 +115,13 @@ printf '%s\n' "$!" >> /tmp/dl.wait.pids
 done
 done
 echo "sure thing boss ($$)"
-# "$scriptdir/tailexisting.sh"
 wait
 while [ -n "$(
   while read -r i; do
     kill -0 "$i" 2>&- && echo || echo done
   done </tmp/dl.wait.pids |
   wc -wl | sed 's/^ *\([0-9]*\) *\([0-9]*\)$/\2\/\1/' |
-  tee -a /dev/fd/2 | sed 'ss^\([0-9]*\)/\1$ss'
+  tee -a /dev/fd/2 | sed 'ss^\([0-9]*\)/\1$ss' # clear if both numbers are equal
 )" ]; do sleep 2.718281828459; done 2>&1 | stdbuf -o 16 tr '\n' '\r'
 rm /tmp/dl.wait.pids
 echo "done boss"
