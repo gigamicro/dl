@@ -2,7 +2,9 @@
 archivedir="$(cat "$(dirname "$0")/archivedir")"
 basedir="$(   cat "$(dirname "$0")/basedir")"
 exec 3>&2
-exec 3>/dev/null
+mkdir -p /tmp/dl
+exec 3>/tmp/dl/archivecheckloose.log
+#exec 3>/dev/null
 {
 find "$archivedir" -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' -o -regex '-[a-zA-Z0-9_-]\{11\}\.' | grep -o '[^/]*/[^/]*$' | \
  sed 's/-[a-zA-Z0-9_-]\{11\}\..*$//; s/ \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$//; t;d' | tr '[:lower:]' '[:upper:]' | { [ -z "$1" ] && sort | uniq || cat; }
@@ -18,48 +20,39 @@ find "$basedir"    -type f -regex '.* \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$' | grep -o
 	# tee -a /dev/fd/2 | \
 	xargs -rd \\n -n 1 ffprobe -loglevel error -show_entries 'stream_tags:stream:format_tags:format' | \
 	sed '
-	/^TAG:comment=/,/^[]/[FORMATSTREAMTAG:synopsisdescription]\{9\}/{
-		/^TAG:comment=/bacomment;
-		/^[]/[FORMATSTREAMTAG:synopdescr]\{9\}/bacomment;
-		s/^/TAG:comment=/
-	};:acomment;
-	/^TAG:description=/,/^[a-zA-Z:_]\{2,\}=/{
-		/^[a-zA-Z:_]\{2,\}=/badescription;
-		s/^/TAG:description=/
-	};:adescription;
-	/^TAG:synopsis=/,/^\[\/FORMAT]$/{
-		/^TAG:synopsis=/basynopsis;
-		/^\[\/FORMAT]$/basynopsis;
-		s/^/TAG:synopsis=/
-	};:asynopsis;
+	/^TAG:comment=/,/^[][/FORMATSTREAMTAG:synopsisdescription]\{9\}/{  //!s/^/TAG:comment=/}
+	/^\0nomatch\n\{666\}\0$/{}
+	/^TAG:description=/,/^[a-zA-Z:_]\{2,\}=/{  //!s/^/TAG:description=/}
+	/^\0nomatch\n\{666\}\0$/{}
+	/^TAG:synopsis=/,/^\[\/FORMAT]$/{  //!s/^/TAG:synopsis=/}
 
-	/TAG:synopsis=/bdates;
-	/TAG:description=/bdates;
+	/^TAG:synopsis=/bdates;
+	/^TAG:description=/bdates;
 	badates;:dates;
 	s/[0-9][0-9][0-9][0-9] //;Tadates;
 	s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]//;Tadates;
 	:adates;
 
-	# /TAG:synopsis=/bparens;
-	# /TAG:album=/bparens;
-	# /TAG:description=/bparens;
+	# /^TAG:synopsis=/bparens;
+	# /^TAG:album=/bparens;
+	# /^TAG:description=/bparens;
 	# baparens;:parens;
 	# s/ ([^(]*)$//;Taparens;
 	# :aparens;
 
-	/TAG:synopsis=/bcommas;
-	/TAG:description=/bcommas;
+	/^TAG:synopsis=/bcommas;
+	/^TAG:description=/bcommas;
 	bacommas;:commas;
 	s/\([a-z]*\), *\([a-z]*\)/\2 \1/i;Tacommas;
 	s///;Tacommas;
 	:acommas;
 
-	/TAG:synopsis=/bmisc;
-	/TAG:description=/bmisc;
+	/^TAG:synopsis=/bmisc;
+	/^TAG:description=/bmisc;
 	bamisc;:misc;
 	s/   */ /g
 	:amisc;
-	/TAG:artist=/s/Mad Vinnie Dead/BigNatesDad/
+	/^TAG:artist=/s/Mad Vinnie Dead/BigNatesDad/
 	' | \
 	# grep -ve '=' -e '^\[' |
 	# grep -e 'TAG:description' -e 'TAG:synopsis' |
