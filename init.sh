@@ -38,11 +38,10 @@ if [ "$1" = "z" ]; then
 	echo ===covercheck\(missing\|nonsquare\) \| toarchive===;"$scriptdir/covercheck.sh"|grep -e '^missing' -e '^nonsquare'|cut -c12-|"$scriptdir/toarchive.sh"
 	echo ===archcrossdupecheck/s===; 			"$scriptdir/crossdupecheck.sh" "$(cat "$scriptdir/archivedir")" .misc | xargs -rd \\n rm -v --
 	echo ===archiveignores \| rm===; 			"$scriptdir/archiveignores.sh" | xargs -rd \\n rm -v --
-	echo ===archivecheckstrict \| rm===; 		{ "$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v --; } 2>&1
+	echo ===archivecheckstrict \| rm===; 		"$scriptdir/archivecheckstrict.sh" | xargs -rd \\n rm -v --
 	echo ===archivecheck \| rm===; 				"$scriptdir/archivecheck.sh" | xargs -rd \\n rm -v --
 	echo ===archivecheck arch \| rm===; 		"$scriptdir/archivecheck.sh" arch | xargs -rd \\n rm -v --
-	echo ===archivecheckloose \| rm===; 		{ "$scriptdir/archivecheckloose.sh" | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --; } 2>&1
-	echo ===archivecheckloose arch \| rm===; 	{ "$scriptdir/archivecheckloose.sh" arch | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --; } 2>&1
+	echo ===archivecheckloose \| rm===; 		"$scriptdir/archivecheckloose.sh" both | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --
 	echo ===cull===; 							"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 else
 	grep -Fqm1 $$ "$LOCKFILE" && rm -v "$LOCKFILE"
@@ -57,8 +56,7 @@ else
 	echo ===archivecheckstrict===; 		"$scriptdir/archivecheckstrict.sh"
 	echo ===archivecheck===; 			"$scriptdir/archivecheck.sh"
 	echo ===archivecheck arch===; 		"$scriptdir/archivecheck.sh" arch
-	echo ===archivecheckloose===; 		"$scriptdir/archivecheckloose.sh"
-	echo ===archivecheckloose arch===; 	"$scriptdir/archivecheckloose.sh" arch
+	echo ===archivecheckloose===; 		"$scriptdir/archivecheckloose.sh" both
 fi
 echo ===untouchedcheck===; 	"$scriptdir/untouchedcheck.sh" "$timestamp"
 # echo ===crossdupecheck===; 	"$scriptdir/crossdupecheck.sh"
