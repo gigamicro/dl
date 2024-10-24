@@ -71,7 +71,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   cd "$dir" || exit
 
   find . -maxdepth 1 ! -iname '*.webp' ! -iname '*.png' ! -iname '*.jpg' \
-  ! -iname '*.part' ! -iname '*.part-Frag*' ! -iname '* [*].temp.*' ! -iname '*.ytdl' ! -empty | \
+  ! -iname '*.part' ! -iname '*.part-Frag*' ! -iname '* \[*].temp.*' ! -iname '*.ytdl' ! -empty | \
   "$scriptdir/nametoignores.sh" > "$dir/$name.archive"
   if [ -f "$scriptdir/ignore/$name.archive" ]; then
     echo "Applying ignore"
@@ -83,7 +83,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" \
   --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
-  --embed-thumbnail --exec before_dl:"find . -name '* \[%(id)s].*' -print0 | xargs -0 -n 1 '$scriptdir/square.sh'" \
+  --embed-thumbnail --exec before_dl:"find . -name '* \[%(id)s].*' -print0 | xargs -0rn1 '$scriptdir/square.sh'" \
   $( [ "$coverflag" = group ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s") \
   --exec after_move:"printf 'success:%s\n' %(filename)q"
   #--playlist-random -i \

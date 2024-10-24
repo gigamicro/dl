@@ -1,6 +1,6 @@
 #! /bin/sh
 exec 2>&1
-scriptdir="$(dirname "$0")"
+scriptdir="$(readlink -f -z "$0" | xargs -0 dirname)"
 LOCKFILE=/tmp/dl.lock
 if [ -e "$LOCKFILE" ]; then printf '%s exists\n' "$LOCKFILE"; return 1; fi
 echo $$ > "$LOCKFILE"
@@ -11,7 +11,7 @@ LOhFILE=~/.local/share/dl/"$(date -Is)".log
 dirname -z "$LOgFILE" "$LOhFILE" | xargs -0r mkdir -pv
 p=$(mktemp -u);mkfifo $p;{
 # anything in here has <(our stdout) and >(our old stdout)
-tee "$LOgFILE" /dev/fd/2 | sed 's/\r$//; s/^.*\r//' > "$LOhFILE"
+tee "$LOgFILE" /dev/fd/2 | stdbuf -oL sed 's/\r$//; s/^.*\r//' > "$LOhFILE"
 }<$p&exec>$p;rm $p;p=;
 exec 2>&1
 
@@ -26,7 +26,7 @@ if [ -f ~/Music/maybe\ remove.m3u ]; then
 	cat ~/Music/maybe\ remove.m3u 2>&1 1>> ~/Music/maybe\ remove~.m3u && rm ~/Music/maybe\ remove.m3u
 fi
 
-echo ===dl\&recentinlog===; "$scriptdir/dl.sh" & sleep 6;
+echo ===dl\&logsummary===; "$scriptdir/dl.sh" & sleep 6;
 "$scriptdir/waitforlogs.sh";
 # "$scriptdir/recentinlog.sh" $!;
 "$scriptdir/logsummary.sh" $!;
