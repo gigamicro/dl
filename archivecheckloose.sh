@@ -104,7 +104,9 @@ else cat;fi | while read -r i; do
 	probei="$(probe "$i")"
 	ip="$(printf %s "$i" | sed 'ss^.*/\([^/]*/[^/]*\)$s\1s;Td; s/ \[[a-zA-Z0-9_-]*\]\.[0-9a-z.]*$//; t;:d;d' | "$(dirname "$0")/unpattern.sh")"
 	[ "$ip" = "" ] && continue
-	dirs0|find -files0-from - -type f \( -ipath "*/$ip \[*].*" -o -ipath "*/$ip-???????????.*" \) | \
+	dirs0|find -files0-from - -type f \( -ipath "*/$ip \[*].*" -o -ipath "*/$ip-???????????.*" \) \
+	! -name '*.part' ! -name '*.part-Frag*' ! -name '* \[*].temp.*' ! -name '*.ytdl' ! -name '*.json' ! -empty \
+	| \
 	while read j; do
 		[ "$i" = "$j" ] && continue
 		printf %s\\n "$probei" | { probe "$j" | { ! diff /dev/fd/4 -;}; } 4<&0 >&3 && { printf '< file=%s\n> file=%s\n' "$i" "$j" >&3; continue; }

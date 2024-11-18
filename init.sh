@@ -20,7 +20,7 @@ echo ===untrash===
 if [ -f ~/Music/maybe\ remove.m3u ]; then
 	echo ===fromplaylist\|grep archivedir\|rm===
 	grep -v '^#' ~/Music/maybe\ remove.m3u | grep -F "/$(basename "$(cat "$scriptdir/archivedir")")/" | sed 'ss^.*/\([^/]*/[^/]*\)$s\1s' |
-		xargs -rd \\n -n 1 printf '%s/%s\n' "$(cat "$scriptdir/archivedir")" | { [ "$1" = "z" ] && cat || xargs -rd \\n rm -v --; }
+		xargs -rd \\n -n 1 printf '%s/%s\n' "$(cat "$scriptdir/archivedir")" | if [ "$1" = "z" ]; then xargs -rd \\n rm -v --; else cat; fi
 	echo ===fromplaylist\|toignore===
 	grep -v '^#' ~/Music/maybe\ remove.m3u | "$scriptdir/toignore.sh"
 	cat ~/Music/maybe\ remove.m3u 2>&1 1>> ~/Music/maybe\ remove~.m3u && rm ~/Music/maybe\ remove.m3u
@@ -44,7 +44,7 @@ if [ "$1" = "z" ]; then
 	echo ===archivecheckloose \| rm===; 		"$scriptdir/archivecheckloose.sh" both | tee -a "$scriptdir/archivecheckloose.log" | xargs -rd \\n rm -v --
 	echo ===cull===; 							"$scriptdir/cull.sh" "$(cat "$scriptdir/archivedir")"
 else
-	grep -Fqm1 $$ "$LOCKFILE" && rm -v "$LOCKFILE"
+	grep -Fqx $$ "$LOCKFILE" && rm -v "$LOCKFILE"
 	echo ===duplicatem3ucheck/s===; 	"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'faV'
 	                                	"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'Danger'
 	                                	"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'Carpenter Brut'
@@ -61,4 +61,4 @@ fi
 echo ===untouchedcheck===; 	"$scriptdir/untouchedcheck.sh" "$timestamp"
 # echo ===crossdupecheck===; 	"$scriptdir/crossdupecheck.sh"
 
-[ -f "$LOCKFILE" ] && grep -Fqm1 $$ "$LOCKFILE" && rm -v "$LOCKFILE"
+[ -f "$LOCKFILE" ] && grep -Fqx $$ "$LOCKFILE" && rm -v "$LOCKFILE"

@@ -66,7 +66,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   fi
   dir="$basedir/$name"
   printf '%s -> %s.\n' "$listurl" "$dir"
-  ln -svrT "$logloc" "/tmp/dl/link/$name.log"
+  ln -svrT "$logloc" "/tmp/dl/link/$name.log" || ln -svrT "$logloc" "/tmp/dl/link/${logloc##*/}"
   mkdir -v "$dir"
   cd "$dir" || exit
 
@@ -81,9 +81,10 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
 
   yt-dlp --embed-metadata --format 'ba*' -x \
   $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" \
+  --trim-filenames 255 \
   --no-overwrites --download-archive "$dir/$name.archive" \
   --concurrent-fragments 32 \
-  --embed-thumbnail --exec before_dl:"find . -name '* \[%(id)s].*' -print0 | xargs -0rn1 '$scriptdir/square.sh'" \
+  --embed-thumbnail --exec before_dl:"find . -name '* \[%(id)s].*' -exec '$scriptdir/square.sh' {} \;" \
   $( [ "$coverflag" = group ] && printf '%s ' --no-embed-thumbnail --no-exec --parse-metadata "playlist_index:%(track_number)s") \
   --exec after_move:"printf 'success:%s\n' %(filename)q"
   #--playlist-random -i \
@@ -102,10 +103,10 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
 
   echo "Writing playlist"
   yt-dlp $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" --flat-playlist --print id | \
-  "$scriptdir/unpattern.sh" | xargs -d \\n -i{} -t find ./ -name '* \[{}].*' -maxdepth 1 \
-  -print0 -nowarn 2>&1 | sed -z 's/[^\n]*\n\([^\n]*\)$/\1/; s/[^\n]*\n/\n/' | tr '\0' '\n' \
+  "$scriptdir/unpattern.sh" | xargs -d \\n -I{} -t find ./ -name '* \[{}].*' -maxdepth 1 \
+  -print0 -nowarn 2>&1 | sed -z 's/[^\n]*\n\([^\n]*\)$/\1/; s/[^\n]*\n/\n/g' | tr '\0' '\n' \
   > "./$name.m3u"
-  # (complex line is to have newlines at nonexistent files)
+  # (complex line and -t option is to have newlines at nonexistent files)
 
   rm "$dir/$name.archive"
 
