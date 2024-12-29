@@ -23,14 +23,15 @@ if [ -f ~/Music/maybe\ remove.m3u ]; then
 		xargs -rd \\n -n 1 printf '%s/%s\n' "$(cat "$scriptdir/archivedir")" | if [ "$1" = "z" ]; then xargs -rd \\n rm -v --; else cat; fi
 	echo ===fromplaylist\|toignore===
 	grep -v '^#' ~/Music/maybe\ remove.m3u | "$scriptdir/toignore.sh"
+	for f in "$scriptdir/ignore"/*; do awk '!seen[$0]++' <"$f" >"$f"~ && if diff "$f" "$f"~; then rm "$f"~; else mv -vf "$f"~ "$f"; fi; done
 	cat ~/Music/maybe\ remove.m3u 2>&1 1>> ~/Music/maybe\ remove~.m3u && rm ~/Music/maybe\ remove.m3u
 fi
 
-echo ===dl\&logsummary===; "$scriptdir/dl.sh" & sleep 6;
+echo ===dl\&logsummary===; "$scriptdir/dl.sh" & sleep 6; dlpid=$!
 "$scriptdir/waitforlogs.sh";
-# "$scriptdir/recentinlog.sh" $!;
-"$scriptdir/logsummary.sh" $!;
-wait $!
+"$scriptdir/recentinlog.sh" $dlpid >>"${LOgFILE%.log}-details.log" 2>&1 &
+"$scriptdir/logsummary.sh" $dlpid;
+wait $dlpid
 if [ "$1" = "z" ]; then
 	echo ===duplicatem3ucheck/s===; 			"$scriptdir/duplicatem3ucheck.sh" "$(cat "$scriptdir/basedir")"/'faV' | "$scriptdir/nametoignores.sh" | cut -d\  -f2- | "$scriptdir/fromfaV.sh"
 	echo ===m3ucheck \| toarchive===; 			"$scriptdir/m3ucheck.sh" | "$scriptdir/toarchive.sh"

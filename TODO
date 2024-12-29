@@ -59,3 +59,16 @@ songs in same source with same length
 clean up meta archive
 
 fix fav - disable m3ucheck without disabling other m3u checks
+
+find a better source for Ras.
+
+vertigoaway dupes
+BRN1NG BRA1N: "Specifically Chu Chu" dupe in dl
+
+shirobeats or louverture
+
+https://youtu.be/5tIIhTmwvpU (TERRA ALMIGHTY)
+https://youtu.be/VgrnEVnZ4xU : https://youtu.be/B5s7191duYc
+
+use m3u instead of archivedir? massive change, would need to selectively erase lines for data/dupe checks
+list filename in main download without redownloading?
