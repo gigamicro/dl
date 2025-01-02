@@ -32,6 +32,8 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
       elif [ "${listurl#*soundcloud.com/}" != "$listurl" ]; then
         listurl="${listurl%/tracks}/tracks"
         name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/ (Tracks)$//;ss/s⧸sg')"
+      elif [ "${listurl#*.bandcamp.com}" != "$listurl" ]; then
+        name="$(yt-dlp "$listurl" --playlist-end 1 --flat-playlist --print playlist_title | sed 's/^Discography of //;ss/s⧸sg')"
       else
         name="$(yt-dlp "$listurl" --flat-playlist --print channel | sort | uniq -c | sort -nr | head -n 1 | tail -c +9 | sed '
           s/ - Topic$//;
@@ -102,6 +104,7 @@ while read -r listurl; do  if [ -z "$listurl" ]; then break; fi; logloc="/tmp/dl
   fi
 
   echo "Writing playlist"
+[ "${listurl#*.bandcamp.com}" != "$listurl" ] ||
   yt-dlp $([ -f "$listurl" ] && printf '%s' --batch-file) "$listurl" --flat-playlist --print id | \
   "$scriptdir/unpattern.sh" | xargs -d \\n -I{} -t find ./ -name '* \[{}].*' -maxdepth 1 \
   -print0 -nowarn 2>&1 | sed -z 's/[^\n]*\n\([^\n]*\)$/\1/; s/[^\n]*\n/\n/g' | tr '\0' '\n' \
